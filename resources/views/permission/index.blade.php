@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+    @php
+        $pageTitle = 'Permissions';
+        $breadcrumbs = [['title' => 'Permissions', 'url' => route('permissions.index')]];
+        $breadcrumbs[] = ['title' => 'All Permissions', 'url' => route('permissions.index')];
+    @endphp
     <div class="container-fluid">
         <div class="card card-primary card-outline">
             <div class="card-header">

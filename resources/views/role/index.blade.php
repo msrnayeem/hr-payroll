@@ -1,9 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
+    @php
+        $pageTitle = 'Roles';
+        $breadcrumbs = [['title' => 'Roles', 'url' => route('roles.index')]];
+        $breadcrumbs[] = ['title' => 'List', 'url' => route('roles.index')];
+    @endphp
     <div class="container-fluid">
-
-
         <div class="card card-primary card-outline">
             <div class="card-header">
                 <h3 class="card-title">Roles List</h3>

@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+    @php
+        $pageTitle = 'Roles';
+        $breadcrumbs = [['title' => 'Roles', 'url' => route('roles.index')]];
+        $breadcrumbs[] = ['title' => 'Edit', 'url' => route('roles.edit', $role)];
+    @endphp
     <div class="container-fluid px-4 py-4" style="background-color: #f4f6f9;">
         <div class="row justify-content-center">
             <div class="col-md-8">

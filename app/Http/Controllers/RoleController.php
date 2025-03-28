@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Routing\Controller;
 
 
-class RolePermissionController extends Controller
+class RoleController extends Controller
 {
     public function __construct()
     {
@@ -78,35 +77,5 @@ class RolePermissionController extends Controller
     {
         $permissions = Permission::all();
         return view('role.edit', compact('role', 'permissions'));
-    }
-
-
-    // Permission Management
-    public function permissionIndex()
-    {
-        $permissions = Permission::all();
-        return view('permission.index', compact('permissions'));
-    }
-
-    public function createPermission()
-    {
-        return view('permission.create');
-    }
-
-    public function storePermission(Request $request)
-    {
-        Permission::create(['name' => $request->name]);
-        return redirect()->route('permissions.index');
-    }
-
-    public function editPermission(Permission $permission)
-    {
-        return view('permission.edit', compact('permission'));
-    }
-
-    public function updatePermission(Request $request, Permission $permission)
-    {
-        $permission->update(['name' => $request->name]);
-        return redirect()->route('permissions.index');
     }
 }
