@@ -32,7 +32,7 @@ require __DIR__ . '/auth.php';
 
 
 // Employee Management
-Route::resource('employees', EmployeeController::class);
+Route::resource('employees', EmployeeController::class)->except(['destroy']);
 
 // Salary Management
 Route::resource('salary-cards', SalaryCardController::class);

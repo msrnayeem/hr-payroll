@@ -60,4 +60,5 @@
     });
 </script>
 
+@stack('js')
 <!--end::Script-->

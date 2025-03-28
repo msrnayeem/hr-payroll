@@ -44,5 +44,7 @@
              color: #fff !important;
          }
      </style>
+
+     @stack('css')
  </head>
  <!--end::Head-->

@@ -30,4 +30,10 @@ class Shift extends Model
         'thursday' => 'boolean',
         'friday' => 'boolean',
     ];
+
+    //shift has many employees
+
+    public function employees(){
+        return $this->hasMany(User::class);
+    }
 }

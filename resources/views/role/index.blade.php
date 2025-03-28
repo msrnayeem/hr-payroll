@@ -76,50 +76,5 @@
     @endpush
 
     @push('js')
-        <script src="/vendor/adminlte/plugins/sweetalert2/sweetalert2.min.js"></script>
-        <script>
-            $(function() {
-                $('.delete-role').on('click', function() {
-                    const roleId = $(this).data('id');
-                    const roleName = $(this).data('name');
-
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: `Do you want to delete the role "${roleName}"?`,
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                url: `{{ url('roles') }}/${roleId}`,
-                                type: 'DELETE',
-                                data: {
-                                    _token: '{{ csrf_token() }}'
-                                },
-                                success: function(response) {
-                                    Swal.fire(
-                                        'Deleted!',
-                                        'Role has been deleted.',
-                                        'success'
-                                    ).then(() => {
-                                        location.reload();
-                                    });
-                                },
-                                error: function(xhr) {
-                                    Swal.fire(
-                                        'Error!',
-                                        'Could not delete the role.',
-                                        'error'
-                                    );
-                                }
-                            });
-                        }
-                    });
-                });
-            });
-        </script>
     @endpush
 @endsection

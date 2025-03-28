@@ -2,42 +2,48 @@
 
 @section('content')
     @php
-        $pageTitle = 'Permissions';
-        $breadcrumbs = [['title' => 'Permissions', 'url' => route('permissions.index')]];
-        $breadcrumbs[] = ['title' => 'All Permissions', 'url' => route('permissions.index')];
+        $pageTitle = 'Employees';
+        $breadcrumbs = [['title' => 'Employees', 'url' => route('employees.index')]];
+        $breadcrumbs[] = ['title' => 'All Employees', 'url' => route('employees.index')];
     @endphp
     <div class="container-fluid">
         <div class="card card-primary card-outline">
             <div class="card-header">
-                <h3 class="card-title">Permissions List</h3>
+                <h3 class="card-title">Employees</h3>
                 @can('create_permission')
                     <div class="card-tools">
-                        <a href="{{ route('permissions.create') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus"></i> Create New Permission
+                        <a href="{{ route('employees.create') }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i> New Employee
                         </a>
                     </div>
                 @endcan
             </div>
 
             <div class="card-body">
-                <table class="table table-bordered table-hover" id="permissionsTable">
+                <table class="table table-bordered table-hover" id="employeesTable">
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
+                            <th>Email</th>
+                            <th>Shift Name</th>
+                            <th>Salary Card ID</th>
                             <th>Created At</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($permissions as $permission)
+                        @foreach ($employees as $employee)
                             <tr>
-                                <td>{{ $permission->id }}</td>
-                                <td>{{ $permission->name }}</td>
-                                <td>{{ $permission->created_at->format('Y-m-d H:i:s') }}</td>
+                                <td>{{ $employee->id }}</td>
+                                <td>{{ $employee->name }}</td>
+                                <td>{{ $employee->email }}</td>
+                                <td>{{ $employee->shift->name ?? 'N\A' }}</td>
+                                <td>{{ $employee->salary_card_id }}</td>
+                                <td>{{ $employee->created_at->format('Y-m-d H:i:s') }}</td>
                                 <td>
                                     <div class="btn-group">
-                                        <a href="{{ route('permissions.edit', $permission->id) }}"
+                                        <a href="{{ route('employees.edit', $employee->id) }}"
                                             class="btn btn-warning btn-sm">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>
@@ -52,8 +58,6 @@
     </div>
 
     @push('css')
-        <link rel="stylesheet" href="/vendor/adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-        <link rel="stylesheet" href="/vendor/adminlte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     @endpush
 
     @push('js')

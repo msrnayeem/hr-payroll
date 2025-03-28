@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Shift;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class EmployeeController extends Controller
 {
@@ -11,7 +14,8 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        //
+        $employees = User::get();
+        return view('employees.index', compact('employees'));
     }
 
     /**
@@ -19,7 +23,8 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        //
+        $shifts = Shift::all();
+        return view('employees.create', compact('shifts'));
     }
 
     /**
@@ -27,7 +32,25 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validate input
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'shift_id' => 'nullable|exists:shifts,id',
+            'salary_card_id' => 'nullable|integer',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        // Create Employee
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'shift_id' => $request->shift_id,
+            'salary_card_id' => $request->salary_card_id,
+            'password' => Hash::make($request->password),
+        ]);
+
+        return redirect()->route('employees.index')->with('success', 'Employee created successfully.');
     }
 
     /**
@@ -41,24 +64,37 @@ class EmployeeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(User $employee)
     {
-        //
+        $shifts = Shift::all();
+        return view('employees.edit', compact('employee', 'shifts'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function update(Request $request, User $employee)
     {
-        //
+        // Validate input
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $employee->id,
+            'shift_id' => 'nullable|exists:shifts,id',
+            'salary_card_id' => 'nullable|integer',
+            'password' => 'nullable|min:6|confirmed',
+        ]);
+
+        // Update fields
+        $employee->name = $request->name;
+        $employee->email = $request->email;
+        $employee->shift_id = $request->shift_id;
+        $employee->salary_card_id = $request->salary_card_id;
+
+        // Update password only if provided
+        if ($request->filled('password')) {
+            $employee->password = Hash::make($request->password);
+        }
+
+        $employee->save();
+
+        return redirect()->route('employees.index')->with('success', 'Employee updated successfully.');
     }
 }

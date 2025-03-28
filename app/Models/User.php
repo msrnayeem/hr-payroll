@@ -48,4 +48,11 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    //employe shift_id belongs to shift
+
+    public function shift()
+    {
+        return $this->belongsTo(Shift::class);
+    }
 }
