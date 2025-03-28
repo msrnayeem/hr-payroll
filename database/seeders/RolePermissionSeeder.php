@@ -33,6 +33,15 @@ class RolePermissionSeeder extends Seeder
         $viewEarnHeads = Permission::create(['name' => 'view_earn_heads']);
         $viewDeductionCategories = Permission::create(['name' => 'view_deduction_categories']);
 
+
+        //create permissions for the roles
+        $manageRolesPermissions = Permission::create(['name' => 'manage_roles_and_permissions']);
+        $viewRoles = Permission::create(['name' => 'view_roles']);
+        $viewPermissions = Permission::create(['name' => 'view_permissions']);
+        $createRole = Permission::create(['name' => 'create_role']);
+        $createPermission = Permission::create(['name' => 'create_permission']);
+
+
         // Assign permissions to roles
         $admin->givePermissionTo([
             $viewDashboard,
@@ -46,7 +55,12 @@ class RolePermissionSeeder extends Seeder
             $viewReports,
             $manageSettings,
             $viewEarnHeads,
-            $viewDeductionCategories
+            $viewDeductionCategories,
+            $manageRolesPermissions,
+            $viewRoles,
+            $viewPermissions,
+            $createRole,
+            $createPermission
         ]);
 
         $hr->givePermissionTo([

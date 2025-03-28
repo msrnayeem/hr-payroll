@@ -11,6 +11,12 @@
     <!--begin::App Wrapper-->
     <div class="app-wrapper">
 
+        @php
+            // Define dynamic breadcrumb items for this page
+            $pageTitle = 'Dashboard';
+            $breadcrumbs = [['title' => 'Dashboard', 'url' => route('dashboard')]];
+        @endphp
+
         <!--begin::Header-->
         @include('components.navbar')
         <!--end::Header-->

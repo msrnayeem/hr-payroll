@@ -2,6 +2,29 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\SalaryCardController;
+use App\Http\Controllers\EarnHeadController;
+use App\Http\Controllers\DeductionCategoryController;
+use App\Http\Controllers\PayslipController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\RolePermissionController;
+
+// Role Management
+Route::get('roles', [RolePermissionController::class, 'index'])->name('roles.index');
+Route::get('roles/create', [RolePermissionController::class, 'create'])->name('roles.create');
+Route::post('roles', [RolePermissionController::class, 'store'])->name('roles.store');
+Route::get('roles/{role}/edit', [RolePermissionController::class, 'edit'])->name('roles.edit');
+Route::put('roles/{role}', [RolePermissionController::class, 'update'])->name('roles.update');
+
+
+// Permission Management
+Route::get('permissions', [RolePermissionController::class, 'permissionIndex'])->name('permissions.index');
+Route::get('permissions/create', [RolePermissionController::class, 'createPermission'])->name('permissions.create');
+Route::post('permissions', [RolePermissionController::class, 'storePermission'])->name('permissions.store');
+Route::get('permissions/{permission}/edit', [RolePermissionController::class, 'editPermission'])->name('permissions.edit');
+Route::put('permissions/{permission}', [RolePermissionController::class, 'updatePermission'])->name('permissions.update');
 
 
 Route::get('/', function () {
@@ -22,16 +45,6 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
-
-
-
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\SalaryCardController;
-use App\Http\Controllers\EarnHeadController;
-use App\Http\Controllers\DeductionCategoryController;
-use App\Http\Controllers\PayslipController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\SettingsController;
 
 
 // Employee Management

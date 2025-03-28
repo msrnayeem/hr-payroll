@@ -162,6 +162,38 @@
                     </li>
                 @endcan
 
+                <!-- Roles and Permissions -->
+                @can('manage_roles_and_permissions')
+                    <li class="nav-item mt-3">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon bi bi-shield-lock"></i>
+                            <p>
+                                Roles & Permissions
+                                <i class="nav-arrow bi bi-chevron-right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            @can('view_roles')
+                                <li class="nav-item">
+                                    <a href="{{ route('roles.index') }}" class="nav-link">
+                                        <i class="nav-icon bi bi-diagram-3"></i>
+                                        <p>Roles</p>
+                                    </a>
+                                </li>
+                            @endcan
+
+                            @can('view_permissions')
+                                <li class="nav-item">
+                                    <a href="{{ route('permissions.index') }}" class="nav-link">
+                                        <i class="nav-icon bi bi-check2-square"></i>
+                                        <p>Permissions</p>
+                                    </a>
+                                </li>
+                            @endcan
+                        </ul>
+                    </li>
+                @endcan
+
                 <!-- Settings -->
                 @can('manage_settings')
                     <li class="nav-item mt-3">
