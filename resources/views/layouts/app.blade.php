@@ -22,9 +22,9 @@
         <!--begin::App Main-->
         <main class="app-main">
 
-            <!--begin::breadcrumb-->
-            @include('components.breadcrumb')
-            <!--end::breadcrumb-->
+            {{-- Pass the variables to the breadcrumb component --}}
+            @include('components.breadcrumb', ['pageTitle' => $pageTitle, 'breadcrumbs' => $breadcrumbs])
+
 
             <!--begin::App Content-->
             <div class="app-content">

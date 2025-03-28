@@ -14,11 +14,19 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->unsignedBigInteger('shift_id')->nullable();
+            $table->foreignId('salary_card_id')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+
+            $table->foreign('salary_card_id')->references('id')->on('salary_cards')->onDelete('set null');
+            $table->foreign('shift_id')
+                ->references('id')
+                ->on('shifts')
+                ->onDelete('set null');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -42,6 +50,12 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['shift_id']);
+            $table->dropColumn('shift_id');
+            $table->dropForeign(['salary_card_id']);
+            $table->dropColumn('salary_card_id');
+        });
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');

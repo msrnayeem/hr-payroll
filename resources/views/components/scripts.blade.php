@@ -34,4 +34,30 @@
     });
 </script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get the current URL path
+        const currentUrl = window.location.href;
+
+        // Select all nav-link elements
+        document.querySelectorAll('.sidebar-menu .nav-link').forEach(function(link) {
+            // Check if the href matches the current URL
+            if (link.href === currentUrl) {
+                link.classList.add('active');
+
+                // Expand all parent treeview items
+                let parent = link.closest('.nav-treeview');
+                while (parent) {
+                    parent.style.display = 'block'; // or add a class to show the submenu if hidden
+                    let parentItem = parent.closest('.nav-item');
+                    if (parentItem) {
+                        parentItem.classList.add('menu-open');
+                    }
+                    parent = parentItem ? parentItem.closest('.nav-treeview') : null;
+                }
+            }
+        });
+    });
+</script>
+
 <!--end::Script-->

@@ -1,8 +1,14 @@
  @extends('layouts.app')
 
- @section('title', 'MOM || Dashboard')
+ @section('title', 'HR SOFT')
 
  @section('content')
+
+     @php
+         // Define dynamic breadcrumb items for this page
+         $pageTitle = 'Dashboard';
+         $breadcrumbs = [['title' => 'Dashboard', 'url' => route('dashboard')]];
+     @endphp
      <!--begin::Row-->
      <div class="row">
          <!--begin::Col-->

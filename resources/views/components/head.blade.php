@@ -24,5 +24,25 @@
      <!-- jsvectormap -->
      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css"
          integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4=" crossorigin="anonymous" />
+
+     <style>
+         body {
+             cursor: default;
+         }
+
+         /* Top-level active menu item */
+         .nav-sidebar .nav-link.active {
+             background-color: #007bff !important;
+             /* Active color for top-level */
+             color: #fff !important;
+         }
+
+         /* Submenu active item */
+         .nav-treeview .nav-link.active {
+             background-color: #0056b3 !important;
+             /* Active color for submenu */
+             color: #fff !important;
+         }
+     </style>
  </head>
  <!--end::Head-->
