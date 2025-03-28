@@ -4,8 +4,9 @@
     @php
         $pageTitle = 'Permissions';
         $breadcrumbs = [['title' => 'Permissions', 'url' => route('permissions.index')]];
-        $breadcrumbs[] = ['title' => 'New Permissions', 'url' => route('permissions.create')];
+        $breadcrumbs[] = ['title' => 'All Permissions', 'url' => route('permissions.index')];
     @endphp
+
     <div class="container">
         <h1>Create Permission</h1>
         <form action="{{ route('permissions.store') }}" method="POST">
