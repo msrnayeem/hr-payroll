@@ -37,7 +37,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('employees', EmployeeController::class)->except(['destroy']);
 
     // Salary Management
-    Route::resource('salary-cards', SalaryCardController::class);
+    Route::resource('salary-cards', SalaryCardController::class)->except(['destroy']);
+    Route::get('salary-cards/{salaryCard}/history', [SalaryCardController::class, 'history'])->name('salary-cards.history');
 
     Route::get('components/{type?}', [SalaryComponentController::class, 'index'])
         ->name('salarycomponent.index');

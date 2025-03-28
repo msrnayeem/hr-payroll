@@ -29,4 +29,9 @@ class SalaryCard extends Model
         $this->net_salary = $this->basic_salary + $earnings - $deductions;
         $this->save();
     }
+
+    public function histories()
+    {
+        return $this->hasMany(SalaryCardHistory::class);
+    }
 }

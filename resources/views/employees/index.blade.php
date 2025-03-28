@@ -27,7 +27,7 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Shift Name</th>
-                            <th>Salary Card ID</th>
+                            <th>Salary Card</th>
                             <th>Created At</th>
                             <th>Actions</th>
                         </tr>
@@ -39,7 +39,15 @@
                                 <td>{{ $employee->name }}</td>
                                 <td>{{ $employee->email }}</td>
                                 <td>{{ $employee->shift->name ?? 'N\A' }}</td>
-                                <td>{{ $employee->salary_card_id }}</td>
+                                <td>
+                                    @if ($employee->salary_card_id)
+                                        <a href="{{ route('salary-cards.show', $employee->salary_card_id) }}">
+                                            View
+                                        </a>
+                                    @else
+                                        N/A
+                                    @endif
+                                </td>
                                 <td>{{ $employee->created_at->format('Y-m-d H:i:s') }}</td>
                                 <td>
                                     <div class="btn-group">
