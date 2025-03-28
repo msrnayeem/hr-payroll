@@ -85,20 +85,20 @@
                                 </li>
                             @endcan
 
-                            @can('view_earn_heads')
+                            @can('view_salary_component')
                                 <li class="nav-item">
-                                    <a href="{{ route('earn-heads.index') }}" class="nav-link">
+                                    <a href="{{ route('salarycomponent.index', ['type' => 'earning']) }}" class="nav-link">
                                         <i class="nav-icon bi bi-plus-square"></i>
                                         <p>Earn Heads</p>
                                     </a>
                                 </li>
                             @endcan
 
-                            @can('view_deduction_categories')
+                            @can('view_salary_component')
                                 <li class="nav-item">
-                                    <a href="{{ route('deduction-categories.index') }}" class="nav-link">
+                                    <a href="{{ route('salarycomponent.index', ['type' => 'deduction']) }}" class="nav-link">
                                         <i class="nav-icon bi bi-dash-square"></i>
-                                        <p>Deduction Categories</p>
+                                        <p>Deductions</p>
                                     </a>
                                 </li>
                             @endcan

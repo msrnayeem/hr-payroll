@@ -30,8 +30,11 @@ class RolePermissionSeeder extends Seeder
         $viewSalaryManagement = Permission::create(['name' => 'view_salary_management']);
         $viewSalaryCards = Permission::create(['name' => 'view_salary_cards']);
         $addSalaryCard = Permission::create(['name' => 'add_salary_card']);
-        $viewEarnHeads = Permission::create(['name' => 'view_earn_heads']);
-        $viewDeductionCategories = Permission::create(['name' => 'view_deduction_categories']);
+
+        // Salary Component permissions
+        $create_salary_component = Permission::create(['name' => 'create_salary_component']);
+        $edit_salary_component = Permission::create(['name' => 'edit_salary_component']);
+        $view_salary_component = Permission::create(['name' => 'view_salary_component']);
 
 
         //create permissions for the roles
@@ -54,8 +57,9 @@ class RolePermissionSeeder extends Seeder
             $generatePayslip,
             $viewReports,
             $manageSettings,
-            $viewEarnHeads,
-            $viewDeductionCategories,
+            $create_salary_component,
+            $view_salary_component,
+            $edit_salary_component,
             $manageRolesPermissions,
             $viewRoles,
             $viewPermissions,
@@ -73,13 +77,15 @@ class RolePermissionSeeder extends Seeder
             $viewPayslips,
             $generatePayslip,
             $viewReports,
-            $viewEarnHeads,
-            $viewDeductionCategories
+            $create_salary_component,
+            $view_salary_component,
+            $edit_salary_component,
         ]);
 
         $employee->givePermissionTo([
             $viewDashboard,
-            $viewPayslips
+            $viewPayslips,
+            $view_salary_component,
         ]);
     }
 }

@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('deduction_types', function (Blueprint $table) {
+        Schema::create('salary_components', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('code')->unique();
+            $table->string('name')->unique();
+            $table->enum('type', ['earning', 'deduction']);
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('deduction_types');
+        Schema::dropIfExists('salary_components');
     }
 };

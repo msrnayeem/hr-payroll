@@ -4,8 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\SalaryCardController;
-use App\Http\Controllers\EarnHeadController;
-use App\Http\Controllers\DeductionCategoryController;
+use App\Http\Controllers\SalaryComponentController;
 use App\Http\Controllers\PayslipController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
@@ -15,7 +14,7 @@ use App\Http\Controllers\PermissionController;
 
 
 Route::get('/', function () {
-    return redirect()->route('dashboard');
+    return redirect()->route('login');
 });
 
 Route::get('/dashboard', function () {
@@ -31,28 +30,34 @@ Route::middleware('auth')->group(function () {
 require __DIR__ . '/auth.php';
 
 
-// Employee Management
-Route::resource('employees', EmployeeController::class)->except(['destroy']);
+// Protect all routes with auth middleware
+Route::middleware(['auth'])->group(function () {
 
-// Salary Management
-Route::resource('salary-cards', SalaryCardController::class);
-Route::resource('earn-heads', EarnHeadController::class);
-Route::resource('deduction-categories', DeductionCategoryController::class);
+    // Employee Management
+    Route::resource('employees', EmployeeController::class)->except(['destroy']);
 
-// Payslips
-Route::resource('payslips', PayslipController::class);
+    // Salary Management
+    Route::resource('salary-cards', SalaryCardController::class);
 
-// Reports
-Route::resource('reports', ReportController::class);
+    Route::get('components/{type?}', [SalaryComponentController::class, 'index'])
+        ->name('salarycomponent.index');
 
-// Role and Permission Management
-
-Route::resource('roles', RoleController::class)->except(['show', 'destroy']);
-Route::resource('permissions', PermissionController::class)->except(['show', 'destroy']);
+    Route::resource('salary-component', SalaryComponentController::class)->except(['index', 'destroy']);
 
 
-// Settings (using group prefix for custom settings routes)
-Route::group(['prefix' => 'settings'], function () {
-    Route::get('system', [SettingsController::class, 'system'])->name('settings.system');
-    Route::get('users', [SettingsController::class, 'users'])->name('settings.users');
+    // Payslips
+    Route::resource('payslips', PayslipController::class);
+
+    // Reports
+    Route::resource('reports', ReportController::class);
+
+    // Role and Permission Management
+    Route::resource('roles', RoleController::class)->except(['show', 'destroy']);
+    Route::resource('permissions', PermissionController::class)->except(['show', 'destroy']);
+
+    // Settings (using group prefix for custom settings routes)
+    Route::group(['prefix' => 'settings'], function () {
+        Route::get('system', [SettingsController::class, 'system'])->name('settings.system');
+        Route::get('users', [SettingsController::class, 'users'])->name('settings.users');
+    });
 });
