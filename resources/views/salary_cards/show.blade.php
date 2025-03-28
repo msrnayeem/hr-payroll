@@ -21,17 +21,17 @@
             <div class="card-header">Salary Card Details</div>
             <div class="card-body">
                 <p><strong>User:</strong> {{ $salaryCard->user ? $salaryCard->user->name : 'Unassigned' }}</p>
-                <p><strong>Basic Salary:</strong> ${{ number_format($salaryCard->basic_salary, 2) }}</p>
-                <p><strong>Net Salary:</strong> ${{ number_format($salaryCard->net_salary, 2) }}</p>
-                <p><strong>Total Earnings:</strong> ${{ number_format($salaryCard->total_earnings, 2) }}</p>
-                <p><strong>Total Deductions:</strong> ${{ number_format($salaryCard->total_deductions, 2) }}</p>
+                <p><strong>Basic Salary:</strong> ৳{{ number_format($salaryCard->basic_salary, 2) }}</p>
+                <p><strong>Net Salary:</strong> ৳{{ number_format($salaryCard->net_salary, 2) }}</p>
+                <p><strong>Total Earnings:</strong> ৳{{ number_format($salaryCard->total_earnings, 2) }}</p>
+                <p><strong>Total Deductions:</strong> ৳{{ number_format($salaryCard->total_deductions, 2) }}</p>
                 <p><strong>Components:</strong>
                     @if ($salaryCard->components->isNotEmpty())
                         <ul>
                             @foreach ($salaryCard->components as $component)
                                 <li>
                                     {{ $component->name }} ({{ ucfirst($component->type) }}):
-                                    ${{ number_format($component->pivot->amount, 2) }}
+                                    ৳{{ number_format($component->pivot->amount, 2) }}
                                     @if ($component->pivot->calculation_type === 'percentage')
                                         ({{ $component->pivot->original_value }}% of Basic)
                                     @else

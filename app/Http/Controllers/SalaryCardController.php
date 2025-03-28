@@ -28,7 +28,9 @@ class SalaryCardController extends Controller
      */
     public function create()
     {
-        return view('salary_cards.create');
+        $users = User::where('salary_card_id', null)->get();
+
+        return view('salary_cards.create', compact('users'));
     }
 
     public function store(Request $request)
@@ -97,11 +99,10 @@ class SalaryCardController extends Controller
 
     public function edit(SalaryCard $salaryCard)
     {
-        return view('salary_cards.edit', compact('salaryCard'));
+        //users where not null salary_card_id
+        $users = User::get();
+        return view('salary_cards.edit', compact('salaryCard', 'users'));
     }
-
-
-
 
     public function update(Request $request, SalaryCard $salaryCard)
     {

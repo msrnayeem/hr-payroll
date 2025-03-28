@@ -38,10 +38,10 @@
                     <tr>
                         <td>{{ $salaryCard->id }}</td>
                         <td>{{ $salaryCard->user ? $salaryCard->user->name : 'Unassigned' }}</td>
-                        <td>${{ number_format($salaryCard->basic_salary, 2) }}</td>
-                        <td>${{ number_format($salaryCard->total_earnings, 2) }}</td>
-                        <td>${{ number_format($salaryCard->total_deductions, 2) }}</td>
-                        <td>${{ number_format($salaryCard->net_salary, 2) }}</td>
+                        <td>৳{{ number_format($salaryCard->basic_salary, 2) }}</td>
+                        <td>৳{{ number_format($salaryCard->total_earnings, 2) }}</td>
+                        <td>৳{{ number_format($salaryCard->total_deductions, 2) }}</td>
+                        <td>৳{{ number_format($salaryCard->net_salary, 2) }}</td>
 
                         <td>
                             <a href="{{ route('salary-cards.show', $salaryCard->id) }}" class="btn btn-info btn-sm">View</a>
