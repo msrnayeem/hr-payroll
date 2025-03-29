@@ -44,6 +44,10 @@ class RolePermissionSeeder extends Seeder
         $createRole = Permission::create(['name' => 'create_role']);
         $createPermission = Permission::create(['name' => 'create_permission']);
 
+        $viewHolidays = Permission::create(['name' => 'view_holidays']);
+        $addHolidays = Permission::create(['name' => 'add_holidays']);
+        $editHolidays = Permission::create(['name' => 'edit_holidays']);
+
 
         // Assign permissions to roles
         $admin->givePermissionTo([
@@ -64,7 +68,10 @@ class RolePermissionSeeder extends Seeder
             $viewRoles,
             $viewPermissions,
             $createRole,
-            $createPermission
+            $createPermission,
+            $viewHolidays,
+            $addHolidays,
+            $editHolidays,
         ]);
 
         $hr->givePermissionTo([
@@ -80,12 +87,16 @@ class RolePermissionSeeder extends Seeder
             $create_salary_component,
             $view_salary_component,
             $edit_salary_component,
+            $viewHolidays,
+            $addHolidays,
+            $editHolidays,
         ]);
 
         $employee->givePermissionTo([
             $viewDashboard,
             $viewPayslips,
             $view_salary_component,
+            $viewHolidays,
         ]);
     }
 }

@@ -165,15 +165,6 @@
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
-                            @can('view_roles')
-                                <li class="nav-item">
-                                    <a href="{{ route('roles.index') }}" class="nav-link">
-                                        <i class="nav-icon bi bi-diagram-3"></i>
-                                        <p>Roles</p>
-                                    </a>
-                                </li>
-                            @endcan
-
                             @can('view_permissions')
                                 <li class="nav-item">
                                     <a href="{{ route('permissions.index') }}" class="nav-link">
@@ -182,7 +173,24 @@
                                     </a>
                                 </li>
                             @endcan
+                            @can('view_roles')
+                                <li class="nav-item">
+                                    <a href="{{ route('roles.index') }}" class="nav-link">
+                                        <i class="nav-icon bi bi-diagram-3"></i>
+                                        <p>Roles</p>
+                                    </a>
+                                </li>
+                            @endcan
                         </ul>
+                    </li>
+                @endcan
+
+                @can('view_holidays')
+                    <li class="nav-item mt-3">
+                        <a href="{{ route('holidays.index') }}" class="nav-link">
+                            <i class="nav-icon bi bi-calendar-check"></i>
+                            <p>Holidays</p>
+                        </a>
                     </li>
                 @endcan
 

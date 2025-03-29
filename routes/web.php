@@ -10,6 +10,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\HolidayController;
 
 
 
@@ -54,6 +55,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Reports
     Route::resource('reports', ReportController::class);
+
+    //holiday management
+    Route::resource('holidays', HolidayController::class)->except(['destroy', 'show']);
 
     // Role and Permission Management
     Route::resource('roles', RoleController::class)->except(['show', 'destroy']);
