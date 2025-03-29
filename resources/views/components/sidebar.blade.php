@@ -195,6 +195,38 @@
                 @endcan
 
                 <!-- Settings -->
+                @can('leave_management')
+                    <li class="nav-item mt-3">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon bi bi-gear-fill"></i>
+                            <p>
+                                Leave Management
+                                <i class="nav-arrow bi bi-chevron-right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            @can('view_leave_categories')
+                                <li class="nav-item">
+                                    <a href="{{ route('leave-categories.index') }}" class="nav-link">
+                                        <i class="nav-icon bi bi-sliders"></i>
+                                        <p>Leave Categories</p>
+                                    </a>
+                                </li>
+                            @endcan
+
+                            @can('view_leave_applications')
+                                <li class="nav-item">
+                                    <a href="{{ route('leave-applications.index') }}" class="nav-link">
+                                        <i class="nav-icon bi bi-people"></i>
+                                        <p>Leave Applications</p>
+                                    </a>
+                                </li>
+                            @endcan
+                        </ul>
+                    </li>
+                @endcan
+
+                <!-- Settings -->
                 @can('manage_settings')
                     <li class="nav-item mt-3">
                         <a href="#" class="nav-link">
