@@ -6,78 +6,89 @@
         $breadcrumbs = [['title' => 'Salary Cards', 'url' => route('salary-cards.index')]];
         $breadcrumbs[] = ['title' => 'New Salary Card', 'url' => route('salary-cards.create')];
     @endphp
-    <div class="container">
-        <h1>Create Salary Card</h1>
-        <div class="row">
-            <!-- Form Column -->
-            <div class="col-md-8">
-                <form action="{{ route('salary-cards.store') }}" method="POST">
-                    @csrf
+    <div class="container-fluid">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">New Salary Cards</h3>
+                <div class="card-tools">
+                    <a href="{{ route('salary-cards.index') }}" class="btn btn-secondary btn-sm">Back</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Form Column -->
+                    <div class="col-md-8">
+                        <form action="{{ route('salary-cards.store') }}" method="POST">
+                            @csrf
 
-                    <!-- User Selection -->
-                    <div class="form-group mb-3">
-                        <label for="user_id">Select User</label>
-                        <select name="user_id" id="user_id" class="form-control" required>
-                            <option value="">-- Select User --</option>
-                            @foreach ($users as $user)
-                                <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->email }})</option>
-                            @endforeach
-                        </select>
-                        @error('user_id')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <!-- Basic Salary -->
-                    <div class="form-group mb-3">
-                        <label for="basic_salary">Basic Salary</label>
-                        <input type="number" name="basic_salary" id="basic_salary" class="form-control" step="0.01"
-                            required>
-                        @error('basic_salary')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <!-- Salary Components -->
-                    <h3>Salary Components</h3>
-                    @foreach (\App\Models\SalaryComponent::all() as $component)
-                        <div class="form-group mb-3">
-                            <label>{{ $component->name }} ({{ ucfirst($component->type) }})</label>
-                            <div class="input-group">
-                                <select name="components[{{ $component->id }}][type]" class="form-control component-type">
-                                    <option value="fixed">Fixed Amount</option>
-                                    <option value="percentage">% of Basic Salary</option>
+                            <!-- User Selection -->
+                            <div class="form-group mb-3">
+                                <label for="user_id">Select User</label>
+                                <select name="user_id" id="user_id" class="form-control" required>
+                                    <option value="">-- Select User --</option>
+                                    @foreach ($users as $user)
+                                        <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->email }})
+                                        </option>
+                                    @endforeach
                                 </select>
-                                <input type="number" name="components[{{ $component->id }}][value]"
-                                    id="component_{{ $component->id }}" class="form-control component-value" step="0.01"
-                                    placeholder="Enter value (optional)">
+                                @error('user_id')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <!-- Basic Salary -->
+                            <div class="form-group mb-3">
+                                <label for="basic_salary">Basic Salary</label>
+                                <input type="number" name="basic_salary" id="basic_salary" class="form-control"
+                                    step="0.01" required>
+                                @error('basic_salary')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <!-- Salary Components -->
+                            <h3>Salary Components</h3>
+                            @foreach (\App\Models\SalaryComponent::all() as $component)
+                                <div class="form-group mb-3">
+                                    <label>{{ $component->name }} ({{ ucfirst($component->type) }})</label>
+                                    <div class="input-group">
+                                        <select name="components[{{ $component->id }}][type]"
+                                            class="form-control component-type">
+                                            <option value="fixed">Fixed Amount</option>
+                                            <option value="percentage">% of Basic Salary</option>
+                                        </select>
+                                        <input type="number" name="components[{{ $component->id }}][value]"
+                                            id="component_{{ $component->id }}" class="form-control component-value"
+                                            step="0.01" placeholder="Enter value (optional)">
+                                    </div>
+                                </div>
+                            @endforeach
+
+                            <!-- Submit Button -->
+                            <div class="form-group mb-3">
+                                <button type="submit" class="btn btn-primary">Create Salary Card</button>
+                                <a href="{{ route('salary-cards.index') }}" class="btn btn-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Sticky Calculation Column -->
+                    <div class="col-md-4">
+                        <div class="card sticky-top" style="top: 20px;">
+                            <div class="card-body">
+                                <h4>Salary Breakdown</h4>
+                                <p>Basic Salary: ৳<span id="display_basic_salary">0.00</span></p>
+                                <p>Total Earnings: ৳<span id="display_total_earnings">0.00</span></p>
+                                <p>Total Deductions: ৳<span id="display_total_deductions">0.00</span></p>
+                                <p>Net Salary: ৳<span id="display_net_salary">0.00</span></p>
                             </div>
                         </div>
-                    @endforeach
-
-                    <!-- Submit Button -->
-                    <div class="form-group mb-3">
-                        <button type="submit" class="btn btn-primary">Create Salary Card</button>
-                        <a href="{{ route('salary-cards.index') }}" class="btn btn-secondary">Cancel</a>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Sticky Calculation Column -->
-            <div class="col-md-4">
-                <div class="card sticky-top" style="top: 20px;">
-                    <div class="card-body">
-                        <h4>Salary Breakdown</h4>
-                        <p>Basic Salary: ৳<span id="display_basic_salary">0.00</span></p>
-                        <p>Total Earnings: ৳<span id="display_total_earnings">0.00</span></p>
-                        <p>Total Deductions: ৳<span id="display_total_deductions">0.00</span></p>
-                        <p>Net Salary: ৳<span id="display_net_salary">0.00</span></p>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- End of Card -->
     </div>
-
     <!-- JavaScript for Live Calculation -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {

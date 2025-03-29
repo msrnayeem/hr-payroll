@@ -24,9 +24,12 @@ class SalaryComponentController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request, $type = null)
     {
-        return view('salary_components.create');
+        if (!in_array($type, ['earning', 'deduction', null])) {
+            abort(404); // Handle invalid types
+        }
+        return view('salary_components.create', compact('type'));
     }
 
     public function store(Request $request)

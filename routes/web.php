@@ -43,7 +43,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('components/{type?}', [SalaryComponentController::class, 'index'])
         ->name('salarycomponent.index');
 
-    Route::resource('salary-component', SalaryComponentController::class)->except(['index', 'destroy']);
+    Route::get('components/{type?}/create', [SalaryComponentController::class, 'create'])
+        ->name('salarycomponent.create');
+
+    Route::resource('salary-component', SalaryComponentController::class)->except(['index', 'destroy', 'create']);
 
 
     // Payslips

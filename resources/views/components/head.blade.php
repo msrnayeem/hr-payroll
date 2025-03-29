@@ -37,9 +37,13 @@
              color: #fff !important;
          }
 
+         .nav-treeview .nav-link {
+             margin-left: 20px;
+         }
+
          /* Submenu active item */
          .nav-treeview .nav-link.active {
-             background-color: #0056b3 !important;
+             background-color: rgb(127, 143, 233) !important;
              /* Active color for submenu */
              color: #fff !important;
          }

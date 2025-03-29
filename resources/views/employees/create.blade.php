@@ -13,6 +13,11 @@
         <div class="card card-primary card-outline">
             <div class="card-header">
                 <h3 class="card-title">Create Employee</h3>
+                <div class="card-tools">
+                    <a href="{{ route('employees.index') }}" class="btn btn-sm btn-outline-primary">
+                        Back
+                    </a>
+                </div>
             </div>
 
             <div class="card-body">
@@ -48,16 +53,6 @@
                             @endforeach
                         </select>
                         @error('shift_id')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="salary_card_id" class="form-label">Salary Card ID</label>
-                        <input type="text" name="salary_card_id" id="salary_card_id"
-                            class="form-control @error('salary_card_id') is-invalid @enderror"
-                            value="{{ old('salary_card_id') }}">
-                        @error('salary_card_id')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>

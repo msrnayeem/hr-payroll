@@ -37,7 +37,6 @@ class EmployeeController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'shift_id' => 'nullable|exists:shifts,id',
-            'salary_card_id' => 'nullable|integer',
             'password' => 'required|min:6|confirmed',
         ]);
 
@@ -46,7 +45,6 @@ class EmployeeController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'shift_id' => $request->shift_id,
-            'salary_card_id' => $request->salary_card_id,
             'password' => Hash::make($request->password),
         ]);
 
@@ -78,7 +76,6 @@ class EmployeeController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $employee->id,
             'shift_id' => 'nullable|exists:shifts,id',
-            'salary_card_id' => 'nullable|integer',
             'password' => 'nullable|min:6|confirmed',
         ]);
 
@@ -86,7 +83,6 @@ class EmployeeController extends Controller
         $employee->name = $request->name;
         $employee->email = $request->email;
         $employee->shift_id = $request->shift_id;
-        $employee->salary_card_id = $request->salary_card_id;
 
         // Update password only if provided
         if ($request->filled('password')) {

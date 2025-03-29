@@ -16,7 +16,7 @@
                 <h3 class="card-title">Salary Components</h3>
                 @can('create_salary_component')
                     <div class="card-tools">
-                        <a href="{{ route('salary-component.create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ route('salarycomponent.create', ['type' => $type]) }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> Create New
                         </a>
                     </div>

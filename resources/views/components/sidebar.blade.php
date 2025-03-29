@@ -2,7 +2,8 @@
     <!--begin::Sidebar Brand-->
     <div class="sidebar-brand">
         <a href="{{ route('dashboard') }}" class="brand-link">
-            <img src="./assets/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image opacity-75 shadow" />
+            <img src="{{ asset('assets/img/AdminLTELogo.png') }}" alt="AdminLTE Logo"
+                class="brand-image opacity-75 shadow" />
             <span class="brand-text fw-light">HR SOFT</span>
         </a>
     </div>
@@ -72,15 +73,6 @@
                                     <a href="{{ route('salary-cards.index') }}" class="nav-link">
                                         <i class="nav-icon bi bi-credit-card"></i>
                                         <p>Salary Cards</p>
-                                    </a>
-                                </li>
-                            @endcan
-
-                            @can('add_salary_card')
-                                <li class="nav-item">
-                                    <a href="{{ route('salary-cards.create') }}" class="nav-link">
-                                        <i class="nav-icon bi bi-plus-circle"></i>
-                                        <p>Add Salary Card</p>
                                     </a>
                                 </li>
                             @endcan
