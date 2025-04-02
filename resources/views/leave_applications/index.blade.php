@@ -39,7 +39,7 @@
                     <tbody>
                         @foreach ($leaveApplications as $leaveApplication)
                             <tr id="leaveApplicationRow-{{ $leaveApplication->id }}">
-                                <td>{{ $leaveApplication->user->name }}</td>
+                                <td>{{ $leaveApplication->employee->name }}</td>
                                 <td>{{ $leaveApplication->leaveCategory->name }}</td>
                                 <td>{{ $leaveApplication->from_date }}</td>
                                 <td>{{ $leaveApplication->to_date }}</td>
@@ -59,10 +59,21 @@
                                 </td>
                                 @can('edit_leave_applications')
                                     <td>
-                                        <button class="btn btn-warning btn-sm editLeaveApplicationBtn"
-                                            data-id="{{ $leaveApplication->id }}">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </button>
+                                        @if ($leaveApplication->status == 'pending')
+                                            <button class="btn btn-warning btn-sm editLeaveApplicationBtn"
+                                                data-id="{{ $leaveApplication->id }}">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </button>
+                                        @endif
+
+                                        @can('take_leave_decision')
+                                            @if ($leaveApplication->status == 'pending')
+                                                <button class="btn btn-warning btn-sm decideLeaveApplicationBtn"
+                                                    data-id="{{ $leaveApplication->id }}">
+                                                    <i class="fas fa-edit"></i> Decide
+                                                </button>
+                                            @endif
+                                        @endcan
                                     </td>
                                 @endcan
                             </tr>
@@ -95,6 +106,16 @@
 
                     // Call the openEditModal function and pass the ID
                     openEditModal(leaveApplicationId);
+                });
+
+                $('.decideLeaveApplicationBtn').click(function() {
+                    console.log('Decide button clicked');
+
+                    // Get the data-id attribute value
+                    const leaveApplicationId = $(this).data('id');
+
+                    // Call the openDecideModal function and pass the ID
+                    openDecideModal(leaveApplicationId);
                 });
 
                 function openCreateModal() {
@@ -150,19 +171,6 @@
 
                                     <div class="row mb-3 align-items-center">
                                         <div class="col-4 text-left">
-                                            <label for="status" class="form-label mb-0">Status</label>
-                                        </div>
-                                        <div class="col-8">
-                                            <select id="status" class="form-control w-100">
-                                                <option value="pending">Pending</option>
-                                                <option value="approved">Approved</option>
-                                                <option value="rejected">Rejected</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3 align-items-center">
-                                        <div class="col-4 text-left">
                                             <label for="reason" class="form-label mb-0">Reason</label>
                                         </div>
                                         <div class="col-8">
@@ -196,12 +204,11 @@
                             let leave_category_id = $('#leave_category_id').val();
                             let from_date = $('#from_date').val();
                             let to_date = $('#to_date').val();
-                            let status = $('#status').val();
                             let reason = $('#reason').val();
                             let supporting_document = $('#supporting_document')[0].files[0];
 
                             // Validation
-                            if (!user_id || !leave_category_id || !from_date || !to_date || !status) {
+                            if (!user_id || !leave_category_id || !from_date || !to_date) {
                                 Swal.showValidationMessage('All fields are required');
                                 return false;
                             }
@@ -212,7 +219,6 @@
                             formData.append('leave_category_id', leave_category_id);
                             formData.append('from_date', from_date);
                             formData.append('to_date', to_date);
-                            formData.append('status', status);
                             formData.append('reason', reason);
                             if (supporting_document) {
                                 formData.append('supporting_document', supporting_document);
@@ -283,20 +289,6 @@
                                     <input type="date" id="edit_to_date" class="form-control w-100" value="${response.to_date}">
                                 </div>
                             </div>
-
-                            <div class="row mb-3 align-items-center">
-                                <div class="col-4 text-left">
-                                    <label for="edit_status" class="form-label mb-0">Status</label>
-                                </div>
-                                <div class="col-8">
-                                    <select id="edit_status" class="form-control w-100">
-                                        <option value="pending" ${response.status === 'pending' ? 'selected' : ''}>Pending</option>
-                                        <option value="approved" ${response.status === 'approved' ? 'selected' : ''}>Approved</option>
-                                        <option value="rejected" ${response.status === 'rejected' ? 'selected' : ''}>Rejected</option>
-                                    </select>
-                                </div>
-                            </div>
-
                             <div class="row mb-3 align-items-center">
                                 <div class="col-4 text-left">
                                     <label for="edit_reason" class="form-label mb-0">Reason</label>
@@ -331,7 +323,6 @@
                                     // Get the updated data from the form
                                     let from_date = $('#edit_from_date').val();
                                     let to_date = $('#edit_to_date').val();
-                                    let status = $('#edit_status').val();
                                     let reason = $('#edit_reason').val();
                                     let supporting_document = $('#edit_supporting_document')[0]
                                         .files[0];
@@ -350,11 +341,9 @@
 
                                     // Submit the form data via AJAX
                                     let formData = new FormData();
-                                    formData.append('_method',
-                                        'PUT'); // Laravel will know it's an update
+                                    formData.append('_method', 'PUT');
                                     formData.append('from_date', from_date);
                                     formData.append('to_date', to_date);
-                                    formData.append('status', status);
                                     formData.append('reason', reason);
                                     if (supporting_document) formData.append(
                                         'supporting_document', supporting_document);
@@ -406,6 +395,75 @@
                         }
                     });
                 }
+
+                // Function to open the decide modal
+                function openDecideModal(id) {
+                    Swal.fire({
+                        title: 'Leave Application',
+                        text: 'Are you sure you want to approve or reject this leave application?',
+                        width: '400px',
+                        showCancelButton: true,
+                        showCloseButton: true, // Enables the (X) close button
+                        confirmButtonText: 'Approve',
+                        cancelButtonText: 'Reject',
+                        customClass: {
+                            container: 'container-fluid',
+                            confirmButton: 'btn btn-primary me-2',
+                            cancelButton: 'btn btn-danger me-2'
+                        },
+                        buttonsStyling: false,
+                        focusConfirm: false,
+                        preConfirm: () => {
+                            return submitLeaveDecision(id, 'approved');
+                        }
+                    }).then((result) => {
+                        if (result.dismiss === Swal.DismissReason.cancel) {
+                            // If rejected, send another request
+                            return submitLeaveDecision(id, 'rejected');
+                        }
+                    });
+                }
+
+                function submitLeaveDecision(id, status) {
+                    // Submit the form data via AJAX
+                    let formData = new FormData();
+                    formData.append('_method', 'PUT');
+                    formData.append('status', status);
+                    return $.ajax({
+                        url: `/leave-applications/${id}`,
+                        method: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    }).then(response => {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: `Leave application has been ${status}.`,
+                            icon: 'success',
+                            customClass: {
+                                confirmButton: 'btn btn-primary'
+                            },
+                            buttonsStyling: false
+                        }).then(() => {
+                            location.reload();
+                        });
+                    }).catch(error => {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: error.responseJSON?.message || 'An error occurred.',
+                            icon: 'error',
+                            customClass: {
+                                confirmButton: 'btn btn-danger'
+                            },
+                            buttonsStyling: false
+                        });
+                    });
+                }
+
+                //end decide modal
 
             });
         </script>

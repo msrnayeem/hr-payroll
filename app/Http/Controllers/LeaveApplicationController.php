@@ -12,11 +12,22 @@ class LeaveApplicationController extends Controller
 {
     public function index()
     {
-        $leaveApplications = LeaveApplication::all();
+        if (auth()->user()->can('take_leave_decision')) {
+            // HR or decision-maker can see all applications
+            $leaveApplications = LeaveApplication::all();
+            $users = User::all();
+        } else {
+            // Regular employee can only see their own applications
+            $leaveApplications = LeaveApplication::where('user_id', auth()->id())->get();
+            $users = User::where('id', auth()->id())->get();
+        }
+
         $leaveCategories = LeaveCategory::all();
-        $users = User::all();
+
+
         return view('leave_applications.index', compact('leaveApplications', 'leaveCategories', 'users'));
     }
+
 
 
     public function store(Request $request)
@@ -27,7 +38,6 @@ class LeaveApplicationController extends Controller
             'leave_category_id' => 'required|exists:leave_categories,id',
             'from_date' => 'required|date',
             'to_date' => 'required|date',
-            'status' => 'required|in:pending,approved,rejected',
             'reason' => 'nullable|string',
             'supporting_document' => 'nullable|file|mimes:pdf,jpg,png,jpeg|max:10240',
         ]);
@@ -50,7 +60,7 @@ class LeaveApplicationController extends Controller
             'from_date' => $validated['from_date'],
             'to_date' => $validated['to_date'],
             'total_days' => $totalDays,
-            'status' => $validated['status'],
+            'status' => $validated['status'] ?? 'pending',
             'reason' => $validated['reason'],
             'supporting_document' => $supportingDocument,
         ]);
@@ -73,34 +83,45 @@ class LeaveApplicationController extends Controller
     {
         $leaveApplication = LeaveApplication::findOrFail($id);
 
-        $validated = $request->validate([
-            'from_date' => 'required|date',
-            'to_date' => 'required|date',
-            'status' => 'required|in:pending,approved,rejected',
-            'reason' => 'nullable|string',
-            'supporting_document' => 'nullable|file|mimes:pdf,jpg,png,jpeg|max:10240',
-        ]);
+        if ($request->status) {
+            $request->validate([
+                'status' => 'required|in:approved,rejected',
+            ]);
 
-        // Calculate the total days
-        $fromDate = Carbon::parse($validated['from_date']);
-        $toDate = Carbon::parse($validated['to_date']);
-        $totalDays = $fromDate->diffInDays($toDate) + 1;
+            // Update the leave application
+            $leaveApplication->update([
+                'status' => $request->status,
+                'decision_maker_id' => auth()->user()->id,
+            ]);
+        } else {
+            $validated = $request->validate([
+                'from_date' => 'required|date',
+                'to_date' => 'required|date',
+                'reason' => 'nullable|string',
+                'status' => 'nullable|in:pending,approved,rejected',
+                'supporting_document' => 'nullable|file|mimes:pdf,jpg,png,jpeg|max:10240',
+            ]);
 
-        // Handle the supporting document upload
-        if ($request->hasFile('supporting_document')) {
-            $supportingDocument = $request->file('supporting_document')->store('supporting_documents');
-            $validated['supporting_document'] = $supportingDocument;
+            // Calculate the total days
+            $fromDate = Carbon::parse($validated['from_date']);
+            $toDate = Carbon::parse($validated['to_date']);
+            $totalDays = $fromDate->diffInDays($toDate) + 1;
+
+            // Handle the supporting document upload
+            if ($request->hasFile('supporting_document')) {
+                $supportingDocument = $request->file('supporting_document')->store('supporting_documents');
+                $validated['supporting_document'] = $supportingDocument;
+            }
+
+            // Update the leave application
+            $leaveApplication->update([
+                'from_date' => $validated['from_date'] ?? $leaveApplication->from_date,
+                'to_date' => $validated['to_date'] ?? $leaveApplication->to_date,
+                'total_days' => $totalDays ?? $leaveApplication->total_days,
+                'reason' => $validated['reason'] ?? $leaveApplication->reason,
+                'supporting_document' => $validated['supporting_document'] ?? $leaveApplication->supporting_document,
+            ]);
         }
-
-        // Update the leave application
-        $leaveApplication->update([
-            'from_date' => $validated['from_date'],
-            'to_date' => $validated['to_date'],
-            'total_days' => $totalDays,
-            'status' => $validated['status'],
-            'reason' => $validated['reason'],
-            'supporting_document' => $validated['supporting_document'] ?? $leaveApplication->supporting_document,
-        ]);
 
         return response()->json(['message' => 'Leave application updated successfully!', 'data' => $leaveApplication]);
     }

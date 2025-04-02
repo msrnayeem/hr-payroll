@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('reason')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->string('supporting_document')->nullable();
+            $table->foreignId('decision_maker_id')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });
     }

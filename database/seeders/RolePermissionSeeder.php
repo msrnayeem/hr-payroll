@@ -48,6 +48,17 @@ class RolePermissionSeeder extends Seeder
         $addHolidays = Permission::create(['name' => 'add_holidays']);
         $editHolidays = Permission::create(['name' => 'edit_holidays']);
 
+        $manageLeave = Permission::create(['name' => 'leave_management']);
+        $viewLeaveCategories = Permission::create(['name' => 'view_leave_categories']);
+        $addLeaveCategory = Permission::create(['name' => 'add_leave_categories']);
+        $editLeaveCategory = Permission::create(['name' => 'edit_leave_categories']);
+
+        $viewLeaveApplications = Permission::create(['name' => 'view_leave_applications']);
+        $addLeaveApplication = Permission::create(['name' => 'add_leave_applications']);
+        $editLeaveApplication = Permission::create(['name' => 'edit_leave_applications']);
+        $takeLeaveDecision = Permission::create(['name' => 'take_leave_decision']);
+
+
 
         // Assign permissions to roles
         $admin->givePermissionTo([
@@ -72,6 +83,52 @@ class RolePermissionSeeder extends Seeder
             $viewHolidays,
             $addHolidays,
             $editHolidays,
+            $manageLeave,
+            $viewLeaveCategories,
+            $addLeaveCategory,
+            $editLeaveCategory,
+            $viewLeaveApplications,
+            $addLeaveApplication,
+            $editLeaveApplication,
+            $takeLeaveDecision,
+
+            $viewHolidays,
+            $addHolidays,
+            $editHolidays,
+            $viewSalaryCards,
+            $addSalaryCard,
+            $viewSalaryManagement,
+            $viewPayslips,
+            $generatePayslip,
+            $viewReports,
+            $create_salary_component,
+            $view_salary_component,
+            $edit_salary_component,
+            $manageRolesPermissions,
+            $viewRoles,
+            $viewPermissions,
+            $createRole,
+            $createPermission,
+            $viewHolidays,
+
+            $addHolidays,
+            $editHolidays,
+            $viewSalaryCards,
+            $addSalaryCard,
+
+
+            $viewSalaryManagement,
+            $viewPayslips,
+            $generatePayslip,
+            $viewReports,
+            $create_salary_component,
+            $view_salary_component,
+            $edit_salary_component,
+            $manageRolesPermissions,
+            $viewRoles,
+            $viewPermissions,
+            $createRole,
+            $createPermission,
         ]);
 
         $hr->givePermissionTo([
@@ -90,6 +147,14 @@ class RolePermissionSeeder extends Seeder
             $viewHolidays,
             $addHolidays,
             $editHolidays,
+            $manageLeave,
+            $viewLeaveCategories,
+            $addLeaveCategory,
+            $editLeaveCategory,
+            $viewLeaveApplications,
+            $addLeaveApplication,
+            $editLeaveApplication,
+            $takeLeaveDecision,
         ]);
 
         $employee->givePermissionTo([
@@ -97,6 +162,11 @@ class RolePermissionSeeder extends Seeder
             $viewPayslips,
             $view_salary_component,
             $viewHolidays,
+
+            $viewLeaveCategories,
+            $viewLeaveApplications,
+            $addLeaveApplication,
+            $editLeaveApplication,
         ]);
     }
 }

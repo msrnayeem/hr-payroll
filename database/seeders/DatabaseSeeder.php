@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             ShiftSeeder::class,
             RolePermissionSeeder::class,
             UserSeeder::class,
+            SalaryComponentsSeeder::class,
         ]);
     }
 }

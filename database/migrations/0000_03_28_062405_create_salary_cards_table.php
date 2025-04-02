@@ -13,14 +13,12 @@ return new class extends Migration
     {
         Schema::create('salary_cards', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->unique();
             $table->double('basic_salary');
             $table->double('net_salary');
             $table->double('total_deductions');
             $table->double('total_earnings');
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

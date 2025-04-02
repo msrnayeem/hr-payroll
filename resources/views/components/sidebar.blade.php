@@ -194,8 +194,8 @@
                     </li>
                 @endcan
 
-                <!-- Settings -->
-                @can('leave_management')
+
+                @canany(['leave_management', 'view_leave_applications'])
                     <li class="nav-item mt-3">
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-gear-fill"></i>
@@ -224,7 +224,8 @@
                             @endcan
                         </ul>
                     </li>
-                @endcan
+                @endcanany
+
 
                 <!-- Settings -->
                 @can('manage_settings')

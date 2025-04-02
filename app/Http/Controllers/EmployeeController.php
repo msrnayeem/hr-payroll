@@ -14,7 +14,7 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employees = User::get();
+        $employees = User::with('shift')->get();
         return view('employees.index', compact('employees'));
     }
 
