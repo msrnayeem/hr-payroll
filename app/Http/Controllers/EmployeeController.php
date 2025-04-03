@@ -6,6 +6,7 @@ use App\Models\Shift;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class EmployeeController extends Controller
 {
@@ -27,9 +28,6 @@ class EmployeeController extends Controller
         return view('employees.create', compact('shifts'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         // Validate input
@@ -38,15 +36,32 @@ class EmployeeController extends Controller
             'email' => 'required|email|unique:users,email',
             'shift_id' => 'nullable|exists:shifts,id',
             'password' => 'required|min:6|confirmed',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Create Employee
-        User::create([
+        // Prepare data for creation
+        $data = [
             'name' => $request->name,
             'email' => $request->email,
             'shift_id' => $request->shift_id,
             'password' => Hash::make($request->password),
-        ]);
+        ];
+
+        // Create Employee first to get the ID
+        $user = User::create($data);
+
+        // Handle profile image upload after user creation
+        if ($request->hasFile('profile_image')) {
+            $extension = $request->file('profile_image')->getClientOriginalExtension();
+            $fileName = $user->id . '.' . $extension; // Use the newly created user's ID
+            $path = $request->file('profile_image')->storeAs('employee', $fileName, 'public');
+
+            // Update the user with the profile image path
+            $user->update(['profile_image' => $path]);
+        }
+
+        // Assign role to employee
+        $user->assignRole('employee');
 
         return redirect()->route('employees.index')->with('success', 'Employee created successfully.');
     }
@@ -54,9 +69,9 @@ class EmployeeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $employee)
     {
-        //
+        return view('employees.show', compact('employee'));
     }
 
     /**
@@ -77,19 +92,37 @@ class EmployeeController extends Controller
             'email' => 'required|email|unique:users,email,' . $employee->id,
             'shift_id' => 'nullable|exists:shifts,id',
             'password' => 'nullable|min:6|confirmed',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Update fields
-        $employee->name = $request->name;
-        $employee->email = $request->email;
-        $employee->shift_id = $request->shift_id;
+        // Prepare data for update
+        $data = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'shift_id' => $request->shift_id,
+        ];
 
         // Update password only if provided
         if ($request->filled('password')) {
-            $employee->password = Hash::make($request->password);
+            $data['password'] = Hash::make($request->password);
         }
 
-        $employee->save();
+        // Handle profile image upload
+        if ($request->hasFile('profile_image')) {
+            // Delete old image if it exists
+            if ($employee->profile_image && Storage::disk('public')->exists($employee->profile_image)) {
+                Storage::disk('public')->delete($employee->profile_image);
+            }
+
+            // Generate new filename using employee ID
+            $extension = $request->file('profile_image')->getClientOriginalExtension();
+            $fileName = $employee->id . '.' . $extension;
+            $path = $request->file('profile_image')->storeAs('employee', $fileName, 'public');
+            $data['profile_image'] = $path;
+        }
+
+        // Update the employee
+        $employee->update($data);
 
         return redirect()->route('employees.index')->with('success', 'Employee updated successfully.');
     }

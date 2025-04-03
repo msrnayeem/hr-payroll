@@ -54,15 +54,15 @@
             <!--begin::User Menu Dropdown-->
             <li class="nav-item dropdown user-menu">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                    <img src="{{ asset('assets/img/user2-160x160.jpg') }}" class="user-image rounded-circle shadow"
-                        alt="Image" />
+                    <img src="{{ auth()->user()->profile_image ? Storage::url(auth()->user()->profile_image) : asset('assets/img/user2-160x160.jpg') }}"
+                        class="user-image rounded-circle shadow" alt="Image" />
                     <span class="d-none d-md-inline"> {{ Auth::user()->name }}</span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                     <!--begin::User Image-->
                     <li class="user-header text-bg-primary">
-                        <img src="{{ asset('assets/img/user2-160x160.jpg') }}" class="rounded-circle shadow"
-                            alt="Image" />
+                        <img src="{{ auth()->user()->profile_image ? Storage::url(auth()->user()->profile_image) : asset('assets/img/user2-160x160.jpg') }}"
+                            class="rounded-circle shadow" alt="Image" />
                         <p>
                             {{ Auth::user()->name }}
                             <small>{{ Auth::user()->created_at }}</small>
@@ -82,7 +82,7 @@
                     <!--end::Menu Body-->
                     <!--begin::Menu Footer-->
                     <li class="user-footer">
-                        <a href="#" class="btn btn-default btn-flat">Profile</a>
+                        <a href="{{ route('profile.show') }}" class="btn btn-default btn-flat">Profile</a>
                         <a href="#" class="btn btn-default btn-flat float-end"
                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Sign
                             out</a>

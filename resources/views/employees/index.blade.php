@@ -24,11 +24,11 @@
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Image</th>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Shift Name</th>
                             <th>Salary Card</th>
-                            <th>Created At</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -36,6 +36,14 @@
                         @foreach ($employees as $employee)
                             <tr>
                                 <td>{{ $employee->id }}</td>
+                                <td>
+                                    @if ($employee->profile_image)
+                                        <img src="{{ Storage::url($employee->profile_image) }}" alt="Employee Image"
+                                            width="50" height="50" class="img-thumbnail">
+                                    @else
+                                        N/A
+                                    @endif
+                                </td>
                                 <td>{{ $employee->name }}</td>
                                 <td>{{ $employee->email }}</td>
                                 <td>{{ $employee->shift->name ?? 'N\A' }}</td>
@@ -48,13 +56,17 @@
                                         N/A
                                     @endif
                                 </td>
-                                <td>{{ $employee->created_at->format('Y-m-d H:i:s') }}</td>
                                 <td>
                                     <div class="btn-group">
-                                        <a href="{{ route('employees.edit', $employee->id) }}"
-                                            class="btn btn-warning btn-sm">
-                                            <i class="fas fa-edit"></i> Edit
+                                        <a href="{{ route('employees.show', $employee->id) }}" class="btn btn-info btn-sm">
+                                            <i class="fas fa-eye"></i> View
                                         </a>
+                                        @can('edit_employee')
+                                            <a href="{{ route('employees.edit', $employee->id) }}"
+                                                class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>

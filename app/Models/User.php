@@ -24,6 +24,7 @@ class User extends Authenticatable
         'password',
         'shift_id',
         'salary_card_id',
+        'profile_image',
     ];
 
     /**

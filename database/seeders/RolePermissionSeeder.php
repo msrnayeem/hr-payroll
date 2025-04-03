@@ -26,6 +26,7 @@ class RolePermissionSeeder extends Seeder
             'employees' => [
                 'view_employees' => Permission::create(['name' => 'view_employees']),
                 'add_employee' => Permission::create(['name' => 'add_employee']),
+                'edit_employee' => Permission::create(['name' => 'edit_employee']),
             ],
 
             // Salary Management
