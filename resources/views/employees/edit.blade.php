@@ -14,9 +14,7 @@
             <div class="card-header bg-primary text-white py-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <h3 class="card-title mb-0">Edit Employee</h3>
-                    <a href="{{ route('employees.index') }}" class="btn btn-light btn-sm">
-                        <i class="fas fa-arrow-left"></i> Back to List
-                    </a>
+
                 </div>
             </div>
 
@@ -135,7 +133,7 @@
                                 <button type="submit" class="btn btn-primary px-4">
                                     <i class="fas fa-save"></i> Update Employee
                                 </button>
-                                <a href="{{ route('employees.index') }}" class="btn btn-outline-secondary px-4">
+                                <a href="{{ url()->previous() }}" class="btn btn-outline-secondary px-4">
                                     <i class="fas fa-times"></i> Cancel
                                 </a>
                             </div>

@@ -14,7 +14,7 @@
             <div class="card-header bg-primary text-white py-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <h3 class="card-title mb-0">Employee Details</h3>
-                    <a href="{{ route('employees.index') }}" class="btn btn-light btn-sm">
+                    <a href="{{ route('employees.index', ['status' => $employee->status]) }}" class="btn btn-light btn-sm">
                         <i class="fas fa-arrow-left"></i> Back to List
                     </a>
                 </div>
