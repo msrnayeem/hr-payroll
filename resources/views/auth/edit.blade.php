@@ -64,6 +64,16 @@
                             </div>
 
                             <div class="mb-3">
+                                <label for="phone" class="form-label">phone</label>
+                                <input type="phone" name="phone" id="phone"
+                                    class="form-control @error('phone') is-invalid @enderror"
+                                    value="{{ old('phone', auth()->user()->phone) }}" required>
+                                @error('phone')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="password" class="form-label">New Password</label>
                                 <input type="password" name="password" id="password"
                                     class="form-control @error('password') is-invalid @enderror">

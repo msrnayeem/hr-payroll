@@ -48,14 +48,20 @@
                             </div>
                             <div class="card-body">
                                 <dl class="row">
+                                    <dt class="col-sm-4">User ID</dt>
+                                    <dd class="col-sm-8">{{ auth()->user()->id }}</dd>
+
                                     <dt class="col-sm-4">Full Name</dt>
                                     <dd class="col-sm-8">{{ auth()->user()->name }}</dd>
 
                                     <dt class="col-sm-4">Email</dt>
                                     <dd class="col-sm-8">{{ auth()->user()->email }}</dd>
 
-                                    <dt class="col-sm-4">User ID</dt>
-                                    <dd class="col-sm-8">{{ auth()->user()->id }}</dd>
+                                    <dt class="col-sm-4">Phone</dt>
+                                    <dd class="col-sm-8">{{ auth()->user()->phone }}</dd>
+
+                                    <dt class="col-sm-4">Status</dt>
+                                    <dd class="col-sm-8">{{ auth()->user()->status }}</dd>
 
                                     <dt class="col-sm-4">Account Created</dt>
                                     <dd class="col-sm-8">

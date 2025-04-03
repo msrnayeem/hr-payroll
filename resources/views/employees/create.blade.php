@@ -4,7 +4,7 @@
     @php
         $pageTitle = 'Create Employee';
         $breadcrumbs = [
-            ['title' => 'Employees', 'url' => route('employees.index')],
+            ['title' => 'Employees', 'url' => route('employees.index', ['status' => 'active'])],
             ['title' => 'Create Employee', 'url' => '#'],
         ];
     @endphp
@@ -66,6 +66,17 @@
                                     class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}"
                                     required>
                                 @error('email')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="phone" class="form-label fw-bold">Phone<span
+                                        class="text-danger">*</span></label>
+                                <input type="phone" name="phone" id="phone"
+                                    class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone') }}"
+                                    required>
+                                @error('phone')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>

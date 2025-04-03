@@ -70,6 +70,17 @@
                             </div>
 
                             <div class="mb-3">
+                                <label for="phone" class="form-label fw-bold">Phone <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" name="phone" id="phone"
+                                    class="form-control @error('phone') is-invalid @enderror"
+                                    value="{{ old('phone', $employee->phone) }}" required>
+                                @error('phone')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="shift_id" class="form-label fw-bold">Shift</label>
                                 <select name="shift_id" id="shift_id"
                                     class="form-select @error('shift_id') is-invalid @enderror">

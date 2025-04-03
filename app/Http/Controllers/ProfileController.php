@@ -27,12 +27,14 @@ class ProfileController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'phone' => 'nullable|string|max:15',
         ]);
 
         // Prepare data for update
         $data = [
             'name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->phone,
         ];
 
         // Handle password update if provided

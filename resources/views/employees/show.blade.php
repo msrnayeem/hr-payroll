@@ -44,6 +44,11 @@
                         </div>
 
                         <div class="mb-3">
+                            <label class="form-label fw-bold">Phone</label>
+                            <p class="form-control-plaintext">{{ $employee->phone }}</p>
+                        </div>
+
+                        <div class="mb-3">
                             <label class="form-label fw-bold">Shift</label>
                             <p class="form-control-plaintext">
                                 {{ $employee->shift ? $employee->shift->name : 'No shift assigned' }}
