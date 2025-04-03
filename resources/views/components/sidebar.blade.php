@@ -37,9 +37,9 @@
                         <ul class="nav nav-treeview">
                             @can('view_employees')
                                 <li class="nav-item">
-                                    <a href="{{ route('employees.index') }}" class="nav-link">
+                                    <a href="{{ route('employees.index', ['status' => 'active']) }}" class="nav-link">
                                         <i class="nav-icon bi bi-list"></i>
-                                        <p>View Employees</p>
+                                        <p>Current Employees</p>
                                     </a>
                                 </li>
                             @endcan
@@ -49,6 +49,15 @@
                                     <a href="{{ route('employees.create') }}" class="nav-link">
                                         <i class="nav-icon bi bi-plus-circle"></i>
                                         <p>Add Employee</p>
+                                    </a>
+                                </li>
+                            @endcan
+
+                            @can('view_employees')
+                                <li class="nav-item">
+                                    <a href="{{ route('employees.index', ['status' => 'inactive']) }}" class="nav-link">
+                                        <i class="nav-icon bi bi-list"></i>
+                                        <p>Inactive Employees</p>
                                     </a>
                                 </li>
                             @endcan

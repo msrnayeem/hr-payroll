@@ -37,6 +37,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Employee Management
     Route::resource('employees', EmployeeController::class)->except(['destroy']);
+    Route::post('/employees/{employee}/update-status', [EmployeeController::class, 'updateStatus'])->name('employees.update-status');
+
 
     // Salary Management
     Route::resource('salary-cards', SalaryCardController::class)->except(['destroy']);

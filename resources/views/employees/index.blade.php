@@ -3,82 +3,55 @@
 @section('content')
     @php
         $pageTitle = 'Employees';
-        $breadcrumbs = [['title' => 'Employees', 'url' => route('employees.index')]];
-        $breadcrumbs[] = ['title' => 'All Employees', 'url' => route('employees.index')];
+        $breadcrumbs = [
+            ['title' => 'Employees', 'url' => route('employees.index')],
+            ['title' => 'All Employees', 'url' => route('employees.index')],
+        ];
     @endphp
-    <div class="container-fluid">
+
+    <div class="container-fluid py-4">
         <div class="card card-primary card-outline">
-            <div class="card-header">
-                <h3 class="card-title">Employees</h3>
-                @can('create_permission')
-                    <div class="card-tools">
-                        <a href="{{ route('employees.create') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus"></i> New Employee
-                        </a>
-                    </div>
-                @endcan
+            <div class="card-header py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="card-title mb-0">Employees</h3>
+                    @if ($status == 'active')
+                        <div class="d-flex gap-2">
+                            @can('add_employee')
+                                <a href="{{ route('employees.create') }}" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-plus"></i> New Employee
+                                </a>
+                            @endcan
+                        </div>
+                    @endif
+                </div>
             </div>
 
-            <div class="card-body">
-                <table class="table table-bordered table-hover" id="employeesTable">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Image</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Shift Name</th>
-                            <th>Salary Card</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($employees as $employee)
-                            <tr>
-                                <td>{{ $employee->id }}</td>
-                                <td>
-                                    @if ($employee->profile_image)
-                                        <img src="{{ Storage::url($employee->profile_image) }}" alt="Employee Image"
-                                            width="50" height="50" class="img-thumbnail">
-                                    @else
-                                        N/A
-                                    @endif
-                                </td>
-                                <td>{{ $employee->name }}</td>
-                                <td>{{ $employee->email }}</td>
-                                <td>{{ $employee->shift->name ?? 'N\A' }}</td>
-                                <td>
-                                    @if ($employee->salary_card_id)
-                                        <a href="{{ route('salary-cards.show', $employee->salary_card_id) }}">
-                                            View
-                                        </a>
-                                    @else
-                                        N/A
-                                    @endif
-                                </td>
-                                <td>
-                                    <div class="btn-group">
-                                        <a href="{{ route('employees.show', $employee->id) }}" class="btn btn-info btn-sm">
-                                            <i class="fas fa-eye"></i> View
-                                        </a>
-                                        @can('edit_employee')
-                                            <a href="{{ route('employees.edit', $employee->id) }}"
-                                                class="btn btn-warning btn-sm">
-                                                <i class="fas fa-edit"></i> Edit
-                                            </a>
-                                        @endcan
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+            <div class="card-body p-4">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item"
+                                href="{{ route('employees.index', request()->query() + ['export' => 'pdf']) }}"
+                                target="_blank">
+                                <i class="fas fa-file-pdf"></i> View PDF
+                            </a></li>
+                        <li><a class="dropdown-item"
+                                href="{{ route('employees.index', request()->query() + ['export' => 'pdf', 'download' => '1']) }}">
+                                <i class="fas fa-file-pdf"></i> Download PDF
+                            </a></li>
+                        <li><a class="dropdown-item"
+                                href="{{ route('employees.index', request()->query() + ['export' => 'excel']) }}">
+                                <i class="fas fa-file-excel"></i> Export as Excel
+                            </a></li>
+
+                    </ul>
+                </div>
+                @include('employees.table')
             </div>
         </div>
     </div>
-
-    @push('css')
-    @endpush
 
     @push('js')
     @endpush

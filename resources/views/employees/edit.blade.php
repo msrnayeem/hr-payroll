@@ -88,6 +88,22 @@
                                 @enderror
                             </div>
 
+                            <div class="mb-3">
+                                <label for="status" class="form-label fw-bold">Status</label>
+                                <select name="status" id="status"
+                                    class="form-select @error('status') is-invalid @enderror">
+                                    <option value="active" {{ $employee->status == 'active' ? 'selected' : '' }}>
+                                        Active
+                                    </option>
+                                    <option value="inactive" {{ $employee->status == 'inactive' ? 'selected' : '' }}>
+                                        Inactive
+                                    </option>
+                                </select>
+                                @error('status')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <div class="mb-3 form-check">
                                 <input type="checkbox" class="form-check-input" id="change_password_checkbox">
                                 <label class="form-check-label fw-bold" for="change_password_checkbox">Change
