@@ -5,9 +5,10 @@
         $pageTitle = 'Employees';
         $breadcrumbs = [
             ['title' => 'Employees', 'url' => route('employees.index')],
-            ['title' => 'All Employees', 'url' => route('employees.index')],
+            ['title' => 'All Employees', 'url' => ''],
         ];
     @endphp
+
 
     <div class="container-fluid py-4">
         <div class="card card-primary card-outline">
