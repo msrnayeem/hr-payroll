@@ -30,8 +30,9 @@
                             <th>ID</th>
                             <th>Name</th>
                             <th>Type</th>
-                            <th>Created At</th>
-                            <th>Actions</th>
+                            @can('edit_salary_component')
+                                <th>Actions</th>
+                            @endcan
                         </tr>
                     </thead>
                     <tbody>
@@ -40,15 +41,14 @@
                                 <td>{{ $component->id }}</td>
                                 <td>{{ $component->name }}</td>
                                 <td> {{ $component->type }}</td>
-                                <td>{{ $component->created_at->format('d-m-Y') }}</td>
-                                <td>
-                                    @can('edit_salary_component')
+                                @can('edit_salary_component')
+                                    <td>
                                         <a href="{{ route('salary-component.edit', $component->id) }}"
                                             class="btn btn-sm btn-warning">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>
-                                    @endcan
-                                </td>
+                                    </td>
+                                @endcan
                             </tr>
                         @empty
                             <tr>

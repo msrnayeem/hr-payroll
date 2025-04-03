@@ -25,7 +25,6 @@
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
-                            <th>Created At</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -34,7 +33,6 @@
                             <tr>
                                 <td>{{ $permission->id }}</td>
                                 <td>{{ $permission->name }}</td>
-                                <td>{{ $permission->created_at->format('Y-m-d H:i:s') }}</td>
                                 <td>
                                     <div class="btn-group">
                                         <a href="{{ route('permissions.edit', $permission->id) }}"

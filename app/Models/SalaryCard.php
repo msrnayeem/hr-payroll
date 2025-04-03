@@ -6,11 +6,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class SalaryCard extends Model
 {
-    protected $fillable = ['basic_salary', 'net_salary', 'total_deductions', 'total_earnings'];
+    protected $fillable = ['basic_salary', 'net_salary', 'total_deductions', 'total_earnings', 'employee_id', 'created_by', 'updated_by'];
 
-    public function user()
+
+    public function employee()
     {
-        return $this->belongsTo(User::class, 'id', 'salary_card_id');
+        return $this->belongsTo(User::class, 'employee_id');
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 
     public function components()

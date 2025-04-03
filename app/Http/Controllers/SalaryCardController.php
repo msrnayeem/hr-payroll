@@ -19,7 +19,12 @@ class SalaryCardController extends Controller
      */
     public function index()
     {
-        $salaryCards = SalaryCard::with(['user', 'components'])->get();
+        if (auth()->user()->can('add_salary_card')) {
+            $salaryCards = SalaryCard::with(['employee', 'components'])->get();
+        } else {
+            $salaryCards = SalaryCard::with(['employee', 'components'])->where('employee_id', auth()->user()->id)->get();
+        }
+
         return view('salary_cards.index', compact('salaryCards'));
     }
 
@@ -36,28 +41,40 @@ class SalaryCardController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
+            'employee_id' => 'required|exists:users,id',
             'basic_salary' => 'required|numeric|min:0',
             'components' => 'array',
             'components.*.type' => 'nullable|in:fixed,percentage',
             'components.*.value' => 'nullable|numeric|min:0',
         ]);
 
-        $salaryCard = SalaryCard::create([
+        $employee = User::findOrFail($request->employee_id);
+
+        // Check if the employee already has a salary card
+        if ($employee->salaryCard()->exists()) {
+            return redirect()->back()->with('error', 'Salary card already exists for this employee.');
+        }
+
+        // Create Salary Card
+        $salaryCard = new SalaryCard([
             'basic_salary' => $request->basic_salary,
             'net_salary' => 0,
             'total_deductions' => 0,
             'total_earnings' => 0,
+            'created_by' => auth()->id(),
         ]);
 
-        $componentsData = [];
+        $employee->salaryCard()->save($salaryCard);
+
+        // Attach Salary Components (if provided)
         if ($request->has('components')) {
+            $componentsData = [];
             foreach ($request->components as $componentId => $data) {
-                if ($data['value'] !== null && $data['value'] > 0) {
+                if (!empty($data['value']) && $data['value'] > 0) {
                     $calculationType = $data['type'] ?? 'fixed';
                     $originalValue = $data['value'];
                     $amount = $calculationType === 'percentage'
-                        ? ($request->basic_salary * $originalValue / 100)
+                        ? ($salaryCard->basic_salary * $originalValue / 100)
                         : $originalValue;
 
                     $componentsData[$componentId] = [
@@ -67,33 +84,35 @@ class SalaryCardController extends Controller
                     ];
                 }
             }
-            $salaryCard->components()->attach($componentsData);
+
+            if (!empty($componentsData)) {
+                $salaryCard->components()->attach($componentsData);
+            }
         }
 
+        // Calculate totals
         $salaryCard->calculateTotals();
 
-        $user = User::find($request->user_id);
-        $user->salary_card_id = $salaryCard->id;
-        $user->save();
-
-        // Log history for creation
+        // Log history for salary card creation
         $newValues = [
-            'user_id' => $user->id,
+            'employee_id' => $employee->id,
             'basic_salary' => $salaryCard->basic_salary,
             'net_salary' => $salaryCard->net_salary,
             'total_earnings' => $salaryCard->total_earnings,
             'total_deductions' => $salaryCard->total_deductions,
-            'components' => $componentsData,
+            'components' => $componentsData ?? [],
+            'created_by' => auth()->id(),
         ];
-        $this->logHistory($salaryCard, 'create', null, $newValues);
+        $this->logHistory($salaryCard, 'create', $newValues, null);
 
         return redirect()->route('salary-cards.index')->with('success', 'Salary card created successfully.');
     }
 
+
     public function show(SalaryCard $salaryCard)
     {
         // Eager load the user and components
-        $salaryCard->load('user', 'components');
+        $salaryCard->load('employee', 'components');
         return view('salary_cards.show', compact('salaryCard'));
     }
 
@@ -107,15 +126,16 @@ class SalaryCardController extends Controller
     public function update(Request $request, SalaryCard $salaryCard)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
+            'employee_id' => 'required|exists:users,id',
             'basic_salary' => 'required|numeric|min:0',
             'components' => 'array',
             'components.*.type' => 'nullable|in:fixed,percentage',
             'components.*.value' => 'nullable|numeric|min:0',
         ]);
 
+        // Store old values for history logging
         $oldValues = [
-            'user_id' => $salaryCard->user ? $salaryCard->user->id : null,
+            'employee_id' => $salaryCard->employee_id,
             'basic_salary' => $salaryCard->basic_salary,
             'net_salary' => $salaryCard->net_salary,
             'total_earnings' => $salaryCard->total_earnings,
@@ -123,18 +143,23 @@ class SalaryCardController extends Controller
             'components' => $salaryCard->components->pluck('pivot')->all(),
         ];
 
+        // Update basic salary and reset totals
         $salaryCard->update([
             'basic_salary' => $request->basic_salary,
+            'net_salary' => 0,           // Reset to recalculate
+            'total_earnings' => 0,       // Reset to recalculate
+            'total_deductions' => 0,     // Reset to recalculate
         ]);
 
-        $componentsData = [];
+        // Handle components
         if ($request->has('components')) {
+            $componentsData = [];
             foreach ($request->components as $componentId => $data) {
-                if ($data['value'] !== null && $data['value'] > 0) {
+                if (!empty($data['value']) && $data['value'] > 0) {
                     $calculationType = $data['type'] ?? 'fixed';
                     $originalValue = $data['value'];
                     $amount = $calculationType === 'percentage'
-                        ? ($request->basic_salary * $originalValue / 100)
+                        ? ($salaryCard->basic_salary * $originalValue / 100)
                         : $originalValue;
 
                     $componentsData[$componentId] = [
@@ -144,41 +169,45 @@ class SalaryCardController extends Controller
                     ];
                 }
             }
-            $salaryCard->components()->sync($componentsData);
+
+            // Sync components (this will remove old ones and add new ones)
+            if (!empty($componentsData)) {
+                $salaryCard->components()->sync($componentsData);
+            } else {
+                $salaryCard->components()->detach();
+            }
         } else {
             $salaryCard->components()->detach();
         }
 
-        $salaryCard->calculateTotals();
+        // Refresh the model to get the latest data
+        $salaryCard->refresh();
 
-        $user = User::find($request->user_id);
-        if ($salaryCard->user && $salaryCard->user->id !== $user->id) {
-            $oldUser = $salaryCard->user;
-            $oldUser->salary_card_id = null;
-            $oldUser->save();
-        }
-        $user->salary_card_id = $salaryCard->id;
-        $user->save();
+        // Calculate totals
+        $salaryCard->calculateTotals();
+        $salaryCard->save(); // Save the calculated totals
 
         // Log history for update
         $newValues = [
-            'user_id' => $user->id,
+            'employee_id' => $salaryCard->employee_id,
             'basic_salary' => $salaryCard->basic_salary,
             'net_salary' => $salaryCard->net_salary,
             'total_earnings' => $salaryCard->total_earnings,
             'total_deductions' => $salaryCard->total_deductions,
-            'components' => $componentsData,
+            'components' => $componentsData ?? [],
+            'updated_by' => auth()->id(),
         ];
-        $this->logHistory($salaryCard, 'update', $oldValues, $newValues);
+        $this->logHistory($salaryCard, 'update', $newValues, $oldValues);
 
         return redirect()->route('salary-cards.index')->with('success', 'Salary card updated successfully.');
     }
+
 
     public function history(SalaryCard $salaryCard)
     {
         // Fetch history records with related user and changedBy data
         $histories = $salaryCard->histories()
-            ->with(['user', 'changedBy'])
+            ->with(['employee', 'changedBy'])
             ->orderBy('changed_at', 'desc')
             ->get();
 
@@ -188,16 +217,16 @@ class SalaryCardController extends Controller
         return view('salary_cards.history', compact('salaryCard', 'histories', 'components'));
     }
 
-    private function logHistory(SalaryCard $salaryCard, string $action, ?array $oldValues = null, array $newValues): void
+    private function logHistory(SalaryCard $salaryCard, string $action, array $newValues, ?array $oldValues = null): void
     {
         SalaryCardHistory::create([
             'salary_card_id' => $salaryCard->id,
-            'user_id' => $newValues['user_id'] ?? $salaryCard->user->id ?? null,
+            'employee_id' => $newValues['employee_id'] ?? $salaryCard->employee->id ?? null,
             'action' => $action,
             'old_values' => $oldValues, // Store raw array, not encoded string
             'new_values' => $newValues, // Store raw array, not encoded string
             'changed_at' => now(),
-            'changed_by' => Auth::id(),
+            'changed_by' => auth()->user()->id,
         ]);
     }
 }

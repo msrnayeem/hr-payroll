@@ -8,7 +8,7 @@ class SalaryCardHistory extends Model
 {
     public $timestamps = false;
 
-    protected $fillable = ['salary_card_id', 'user_id', 'action', 'old_values', 'new_values', 'changed_at', 'changed_by'];
+    protected $fillable = ['salary_card_id', 'employee_id', 'action', 'old_values', 'new_values', 'changed_at', 'changed_by'];
 
     protected $casts = [
         'old_values' => 'array',
@@ -21,9 +21,9 @@ class SalaryCardHistory extends Model
         return $this->belongsTo(SalaryCard::class);
     }
 
-    public function user()
+    public function employee()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'employee_id');
     }
 
     public function changedBy()

@@ -2,171 +2,126 @@
 
 namespace Database\Seeders;
 
-
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-
 
 class RolePermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        // Create roles
+        // Create Roles
         $admin = Role::create(['name' => 'admin']);
         $hr = Role::create(['name' => 'hr']);
         $employee = Role::create(['name' => 'employee']);
 
-        // Create permissions
-        $viewDashboard = Permission::create(['name' => 'view_dashboard']);
-        $viewEmployees = Permission::create(['name' => 'view_employees']);
-        $addEmployee = Permission::create(['name' => 'add_employee']);
-        $viewPayslips = Permission::create(['name' => 'view_payslips']);
-        $generatePayslip = Permission::create(['name' => 'generate_payslip']);
-        $viewReports = Permission::create(['name' => 'view_reports']);
-        $manageSettings = Permission::create(['name' => 'manage_settings']);
+        // Define Permissions by Category
+        // General Permissions
+        $permissions = [
+            'general' => [
+                'view_dashboard' => Permission::create(['name' => 'view_dashboard']),
+            ],
 
-        // Salary Management permissions
-        $viewSalaryManagement = Permission::create(['name' => 'view_salary_management']);
-        $viewSalaryCards = Permission::create(['name' => 'view_salary_cards']);
-        $addSalaryCard = Permission::create(['name' => 'add_salary_card']);
+            // Employee Management
+            'employees' => [
+                'view_employees' => Permission::create(['name' => 'view_employees']),
+                'add_employee' => Permission::create(['name' => 'add_employee']),
+            ],
 
-        // Salary Component permissions
-        $create_salary_component = Permission::create(['name' => 'create_salary_component']);
-        $edit_salary_component = Permission::create(['name' => 'edit_salary_component']);
-        $view_salary_component = Permission::create(['name' => 'view_salary_component']);
+            // Salary Management
+            'salary' => [
+                'view_salary_management' => Permission::create(['name' => 'view_salary_management']),
+                'view_salary_cards' => Permission::create(['name' => 'view_salary_cards']),
+                'add_salary_card' => Permission::create(['name' => 'add_salary_card']),
+                'edit_salary_card' => Permission::create(['name' => 'edit_salary_card']),
+            ],
 
+            // Salary Components
+            'components' => [
+                'view_salary_component' => Permission::create(['name' => 'view_salary_component']),
+                'create_salary_component' => Permission::create(['name' => 'create_salary_component']),
+                'edit_salary_component' => Permission::create(['name' => 'edit_salary_component']),
+            ],
 
-        //create permissions for the roles
-        $manageRolesPermissions = Permission::create(['name' => 'manage_roles_and_permissions']);
-        $viewRoles = Permission::create(['name' => 'view_roles']);
-        $viewPermissions = Permission::create(['name' => 'view_permissions']);
-        $createRole = Permission::create(['name' => 'create_role']);
-        $createPermission = Permission::create(['name' => 'create_permission']);
+            // Payslips
+            'payslips' => [
+                'view_payslips' => Permission::create(['name' => 'view_payslips']),
+                'generate_payslip' => Permission::create(['name' => 'generate_payslip']),
+            ],
 
-        $viewHolidays = Permission::create(['name' => 'view_holidays']);
-        $addHolidays = Permission::create(['name' => 'add_holidays']);
-        $editHolidays = Permission::create(['name' => 'edit_holidays']);
+            // Reports and Settings
+            'admin' => [
+                'view_reports' => Permission::create(['name' => 'view_reports']),
+                'manage_settings' => Permission::create(['name' => 'manage_settings']),
+            ],
 
-        $manageLeave = Permission::create(['name' => 'leave_management']);
-        $viewLeaveCategories = Permission::create(['name' => 'view_leave_categories']);
-        $addLeaveCategory = Permission::create(['name' => 'add_leave_categories']);
-        $editLeaveCategory = Permission::create(['name' => 'edit_leave_categories']);
+            // Roles and Permissions Management
+            'roles_permissions' => [
+                'manage_roles_and_permissions' => Permission::create(['name' => 'manage_roles_and_permissions']),
+                'view_roles' => Permission::create(['name' => 'view_roles']),
+                'view_permissions' => Permission::create(['name' => 'view_permissions']),
+                'create_role' => Permission::create(['name' => 'create_role']),
+                'create_permission' => Permission::create(['name' => 'create_permission']),
+            ],
 
-        $viewLeaveApplications = Permission::create(['name' => 'view_leave_applications']);
-        $addLeaveApplication = Permission::create(['name' => 'add_leave_applications']);
-        $editLeaveApplication = Permission::create(['name' => 'edit_leave_applications']);
-        $takeLeaveDecision = Permission::create(['name' => 'take_leave_decision']);
+            // Holidays
+            'holidays' => [
+                'view_holidays' => Permission::create(['name' => 'view_holidays']),
+                'add_holidays' => Permission::create(['name' => 'add_holidays']),
+                'edit_holidays' => Permission::create(['name' => 'edit_holidays']),
+            ],
 
+            // Leave Management
+            'leaves' => [
+                'leave_management' => Permission::create(['name' => 'leave_management']),
+                'view_leave_categories' => Permission::create(['name' => 'view_leave_categories']),
+                'add_leave_categories' => Permission::create(['name' => 'add_leave_categories']),
+                'edit_leave_categories' => Permission::create(['name' => 'edit_leave_categories']),
+                'view_leave_applications' => Permission::create(['name' => 'view_leave_applications']),
+                'add_leave_applications' => Permission::create(['name' => 'add_leave_applications']),
+                'edit_leave_applications' => Permission::create(['name' => 'edit_leave_applications']),
+                'take_leave_decision' => Permission::create(['name' => 'take_leave_decision']),
+            ],
+        ];
 
+        // Assign Permissions to Roles
+        // Admin - Full access
+        $admin->givePermissionTo(array_merge(
+            $permissions['general'],
+            $permissions['employees'],
+            $permissions['salary'],
+            $permissions['components'],
+            $permissions['payslips'],
+            $permissions['admin'],
+            $permissions['roles_permissions'],
+            $permissions['holidays'],
+            $permissions['leaves']
+        ));
 
-        // Assign permissions to roles
-        $admin->givePermissionTo([
-            $viewDashboard,
-            $viewEmployees,
-            $addEmployee,
-            $viewSalaryManagement,
-            $viewSalaryCards,
-            $addSalaryCard,
-            $viewPayslips,
-            $generatePayslip,
-            $viewReports,
-            $manageSettings,
-            $create_salary_component,
-            $view_salary_component,
-            $edit_salary_component,
-            $manageRolesPermissions,
-            $viewRoles,
-            $viewPermissions,
-            $createRole,
-            $createPermission,
-            $viewHolidays,
-            $addHolidays,
-            $editHolidays,
-            $manageLeave,
-            $viewLeaveCategories,
-            $addLeaveCategory,
-            $editLeaveCategory,
-            $viewLeaveApplications,
-            $addLeaveApplication,
-            $editLeaveApplication,
-            $takeLeaveDecision,
+        // HR - Most access except roles/permissions management and settings
+        $hr->givePermissionTo(array_merge(
+            $permissions['general'],
+            $permissions['employees'],
+            $permissions['salary'],
+            $permissions['components'],
+            $permissions['payslips'],
+            [$permissions['admin']['view_reports']], // Only view reports, not manage settings
+            $permissions['holidays'],
+            $permissions['leaves']
+        ));
 
-            $viewHolidays,
-            $addHolidays,
-            $editHolidays,
-            $viewSalaryCards,
-            $addSalaryCard,
-            $viewSalaryManagement,
-            $viewPayslips,
-            $generatePayslip,
-            $viewReports,
-            $create_salary_component,
-            $view_salary_component,
-            $edit_salary_component,
-            $manageRolesPermissions,
-            $viewRoles,
-            $viewPermissions,
-            $createRole,
-            $createPermission,
-            $viewHolidays,
-
-            $addHolidays,
-            $editHolidays,
-            $viewSalaryCards,
-            $addSalaryCard,
-
-
-            $viewSalaryManagement,
-            $viewPayslips,
-            $generatePayslip,
-            $viewReports,
-            $create_salary_component,
-            $view_salary_component,
-            $edit_salary_component,
-            $manageRolesPermissions,
-            $viewRoles,
-            $viewPermissions,
-            $createRole,
-            $createPermission,
-        ]);
-
-        $hr->givePermissionTo([
-            $viewDashboard,
-            $viewEmployees,
-            $addEmployee,
-            $viewSalaryManagement,
-            $viewSalaryCards,
-            $addSalaryCard,
-            $viewPayslips,
-            $generatePayslip,
-            $viewReports,
-            $create_salary_component,
-            $view_salary_component,
-            $edit_salary_component,
-            $viewHolidays,
-            $addHolidays,
-            $editHolidays,
-            $manageLeave,
-            $viewLeaveCategories,
-            $addLeaveCategory,
-            $editLeaveCategory,
-            $viewLeaveApplications,
-            $addLeaveApplication,
-            $editLeaveApplication,
-            $takeLeaveDecision,
-        ]);
-
+        // Employee - Limited access
         $employee->givePermissionTo([
-            $viewDashboard,
-            $viewPayslips,
-            $view_salary_component,
-            $viewHolidays,
-
-            $viewLeaveCategories,
-            $viewLeaveApplications,
-            $addLeaveApplication,
-            $editLeaveApplication,
+            $permissions['general']['view_dashboard'],
+            $permissions['salary']['view_salary_management'],
+            $permissions['salary']['view_salary_cards'],
+            $permissions['payslips']['view_payslips'],
+            $permissions['components']['view_salary_component'],
+            $permissions['holidays']['view_holidays'],
+            $permissions['leaves']['view_leave_categories'],
+            $permissions['leaves']['view_leave_applications'],
+            $permissions['leaves']['add_leave_applications'],
+            $permissions['leaves']['edit_leave_applications'],
         ]);
     }
 }

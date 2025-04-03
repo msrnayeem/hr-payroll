@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('salary_cards', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->unique();
+            $table->unsignedBigInteger('employee_id')->unique();
             $table->double('basic_salary');
             $table->double('net_salary');
             $table->double('total_deductions');
             $table->double('total_earnings');
+            $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
         });
     }

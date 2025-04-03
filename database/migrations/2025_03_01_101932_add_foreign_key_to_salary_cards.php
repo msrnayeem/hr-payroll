@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('salary_cards', function (Blueprint $table) {
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('employee_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('updated_by')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -22,7 +24,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('salary_cards', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
+            $table->dropForeign(['employee_id', 'created_by', 'updated_by']);
+            $table->dropColumn('employee_id');
+            $table->dropColumn('created_by');
+            $table->dropColumn('updated_by');
         });
     }
 };

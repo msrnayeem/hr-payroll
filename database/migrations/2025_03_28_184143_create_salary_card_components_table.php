@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('salary_card_id')->constrained()->onDelete('cascade');
             $table->foreignId('salary_component_id')->constrained()->onDelete('cascade');
-            $table->double('amount');
+            $table->enum('calculation_type', ['fixed', 'percentage'])->default('fixed');
+            $table->double('original_value')->nullable();
+            $table->double('amount')->nullable();
             $table->timestamps();
         });
     }

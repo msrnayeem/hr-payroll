@@ -26,13 +26,13 @@
 
                             <!-- User Selection -->
                             <div class="form-group mb-3">
-                                <label for="user_id">Select User</label>
-                                <select name="user_id" id="user_id" class="form-control" required>
-                                    <option value="{{ $salaryCard->user->id }}">
-                                        {{ $salaryCard->user->name }} ({{ $salaryCard->user->email }})
+                                <label for="employee_id">Select User</label>
+                                <select name="employee_id" id="employee_id" class="form-control" required>
+                                    <option value="{{ $salaryCard->employee->id }}">
+                                        {{ $salaryCard->employee->name }} ({{ $salaryCard->employee->email }})
                                     </option>
                                 </select>
-                                @error('user_id')
+                                @error('employee_id')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>

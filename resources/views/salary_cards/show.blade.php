@@ -14,7 +14,9 @@
                 <h3 class="card-title">Salary Card #{{ $salaryCard->id }}</h3>
 
                 <div class="card-tools">
-                    <a href="{{ route('salary-cards.edit', $salaryCard->id) }}" class="btn btn-sm btn-warning me-2">Edit</a>
+                    @can('edit_salary_card')
+                        <a href="{{ route('salary-cards.edit', $salaryCard->id) }}" class="btn btn-sm btn-warning me-2">Edit</a>
+                    @endcan
                     <a href="{{ route('salary-cards.history', $salaryCard->id) }}"
                         class="btn btn-sm btn-secondary me-2">History</a>
                     <a href="{{ route('salary-cards.index') }}" class="btn btn-secondary btn-sm">Back</a>

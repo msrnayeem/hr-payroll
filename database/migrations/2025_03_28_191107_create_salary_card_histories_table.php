@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('salary_card_histories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('salary_card_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null'); // User at the time of action
+            $table->foreignId('employee_id')->nullable()->constrained('users')->onDelete('set null'); // User at the time of action
             $table->string('action')->index(); // 'create' or 'update'
             $table->json('old_values')->nullable(); // Values before the action (null for create)
             $table->json('new_values'); // Values after the action

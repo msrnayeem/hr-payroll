@@ -58,6 +58,6 @@ class User extends Authenticatable
 
     public function salaryCard()
     {
-        return $this->hasOne(SalaryCard::class, 'id', 'salary_card_id');
+        return $this->hasOne(SalaryCard::class, 'employee_id');
     }
 }

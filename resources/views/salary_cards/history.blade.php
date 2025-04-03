@@ -24,7 +24,9 @@
                 <div class="card mb-4">
                     <div class="card-header">Current Salary Card Details</div>
                     <div class="card-body">
-                        <p><strong>User:</strong> {{ $salaryCard->user ? $salaryCard->user->name : 'Unassigned' }}</p>
+                        <p><strong>Employee:</strong>
+                            {{ $salaryCard->employee ? $salaryCard->employee->name : 'Unassigned' }}
+                        </p>
                         <p><strong>Basic Salary:</strong> ${{ number_format($salaryCard->basic_salary, 2) }}</p>
                         <p><strong>Net Salary:</strong> ${{ number_format($salaryCard->net_salary, 2) }}</p>
                         <p><strong>Total Earnings:</strong> ${{ number_format($salaryCard->total_earnings, 2) }}</p>
@@ -37,7 +39,7 @@
                     <thead class="thead-dark">
                         <tr>
                             <th>Action</th>
-                            <th>User</th>
+                            <th>Employee</th>
                             <th>Old Values</th>
                             <th>New Values</th>
                             <th>Changed At</th>
@@ -48,11 +50,12 @@
                         @forelse ($histories as $history)
                             <tr>
                                 <td>{{ ucfirst($history->action) }}</td>
-                                <td>{{ $history->user ? $history->user->name : 'N/A' }}</td>
+                                <td>{{ $history->employee ? $history->employee->name : 'N/A' }}</td>
                                 <td>
                                     @if ($history->old_values)
                                         <ul>
-                                            <li><strong>User ID:</strong> {{ $history->old_values['user_id'] ?? 'N/A' }}
+                                            <li><strong>Employee ID:</strong>
+                                                {{ $history->old_values['employee_id'] ?? 'N/A' }}
                                             </li>
                                             <li><strong>Basic Salary:</strong>
                                                 ${{ number_format($history->old_values['basic_salary'], 2) }}</li>
@@ -95,7 +98,8 @@
                                 </td>
                                 <td>
                                     <ul>
-                                        <li><strong>User ID:</strong> {{ $history->new_values['user_id'] ?? 'N/A' }}</li>
+                                        <li><strong>Employee ID:</strong>
+                                            {{ $history->new_values['employee_id'] ?? 'N/A' }}</li>
                                         <li><strong>Basic Salary:</strong>
                                             ${{ number_format($history->new_values['basic_salary'], 2) }}</li>
                                         <li><strong>Net Salary:</strong>
