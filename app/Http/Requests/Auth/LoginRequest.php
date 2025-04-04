@@ -59,7 +59,7 @@ class LoginRequest extends FormRequest
         $user = Auth::user();
 
         // Now check if the user is active
-        if ($user->status !== 'active') {
+        if ($user->status) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([

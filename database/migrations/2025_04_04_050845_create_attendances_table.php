@@ -20,12 +20,10 @@ return new class extends Migration
             $table->foreign('employee_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->time('shift_start');
-            $table->tinyInteger('late_entry_consider')->nullable();
             $table->time('entry_time');
             $table->boolean('is_late');
 
             $table->time('shift_end');
-            $table->tinyInteger('early_out_consider')->nullable();
             $table->time('exit_time');
             $table->boolean('is_early');
 

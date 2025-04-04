@@ -12,8 +12,10 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\HolidayController;
+use App\Http\Controllers\InOutRecordController;
 use App\Http\Controllers\LeaveCategoryController;
 use App\Http\Controllers\LeaveApplicationController;
+use App\Models\InOutRecord;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -41,7 +43,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/employees/{employee}/update-status', [EmployeeController::class, 'updateStatus'])->name('employees.update-status');
 
     //attendance resource routes
-    Route::resource('attendances', AttendanceController::class)->except(['destroy', 'show']);
+    Route::resource('attendances', AttendanceController::class)->only(['index']);
+    Route::get('/attendances/requests', [AttendanceController::class, 'attendanceRequest'])->name('attendances-requests.index');
+    Route::post('/attendances/requests', [AttendanceController::class, 'attendanceRequestStore'])->name('attendances-requests.store');
+    Route::get('/attendances-requests/{id}/edit', [AttendanceController::class, 'attendanceRequestEdit'])->name('attendances-requests.edit');
+    Route::put('/attendances-requests/{id}/update', [AttendanceController::class, 'attendanceRequestUpdate'])->name('attendances-requests.update');
+
+    //in-out-records
+    Route::get('/in-out-records', [InOutRecordController::class, 'index'])->name('in-out-records.index');
 
     // Salary Management
     Route::resource('salary-cards', SalaryCardController::class)->except(['destroy']);

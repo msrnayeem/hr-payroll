@@ -21,9 +21,17 @@ class PermissionController extends Controller
 
     public function store(Request $request)
     {
+        // Check if the permission already exists
+        if (Permission::where('name', $request->name)->exists()) {
+            return redirect()->route('permissions.index')->with('error', 'Permission already exists.');
+        }
+
+        // If the permission does not exist, create a new one
         Permission::create(['name' => $request->name]);
-        return redirect()->route('permissions.index');
+
+        return redirect()->route('permissions.index')->with('success', 'Permission created successfully.');
     }
+
 
     public function edit(Permission $permission)
     {

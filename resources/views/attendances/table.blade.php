@@ -39,9 +39,6 @@
     <thead>
         <tr>
             <th>ID</th>
-            @if (!isset($export))
-                <th>Image</th>
-            @endif
             <th>Name</th>
             <th>Date</th>
             <th>Shift</th>
@@ -57,17 +54,6 @@
         @foreach ($attendances as $attendance)
             <tr>
                 <td>{{ $attendance->id }}</td>
-
-                @if (!isset($export))
-                    <td>
-                        @if ($attendance->employee->profile_image)
-                            <img src="{{ Storage::url($attendance->employee->profile_image) }}" alt="Employee Image"
-                                width="50" height="50" class="img-thumbnail">
-                        @else
-                            N/A
-                        @endif
-                    </td>
-                @endif
 
                 <td>{{ $attendance->employee->name ?? 'N/A' }}</td>
                 <td>{{ $attendance->attendance_date }}</td>

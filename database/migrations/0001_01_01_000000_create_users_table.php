@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('zk_device_id')->nullable();
             $table->string('profile_image')->nullable();
             $table->string('name');
             $table->unsignedBigInteger('shift_id')->nullable();

@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 use App\Exports\AttendancesExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use App\Models\AttendanceRequest;
+use App\Models\Shift;
+use Carbon\Carbon;
 
 class AttendanceController extends Controller
 {
@@ -51,51 +54,146 @@ class AttendanceController extends Controller
         return view('attendances.index', compact('attendances', 'employees'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+
+    public function attendanceRequest()
     {
-        //
+
+        if (auth()->user()->can('attendance_request_decision')) {
+            $attendanceRequests = AttendanceRequest::with(['employee', 'decidedBy'])->get();
+            $users = User::all();
+        } else {
+            $attendanceRequests = AttendanceRequest::with(['employee', 'decidedBy'])->where('employee_id', auth()->user()->id)->get();
+            $users = User::where('id', auth()->user()->id)->get();
+        }
+
+        return view('attendances.requests', compact('attendanceRequests', 'users'));
+    }
+    public function attendanceRequestStore(Request $request)
+    {
+        $validated = $request->validate([
+            'employee_id' => 'required|exists:users,id',
+            'attendance_date' => 'required|date',
+            'entry_time' => 'required|date_format:H:i',
+            'exit_time' => 'required|date_format:H:i|after:entry_time',
+            'reason' => 'nullable|string|max:1000',
+        ]);
+
+        $attendanceRequest = AttendanceRequest::create([
+            'employee_id' => $validated['employee_id'],
+            'attendance_date' => $validated['attendance_date'],
+            'entry_time' => $validated['entry_time'],
+            'exit_time' => $validated['exit_time'],
+            'reason' => $validated['reason'],
+            'status' => 'pending',
+            'decided_by' => null, // Will be set when approved/rejected
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Attendance request created successfully',
+            'data' => $attendanceRequest
+        ], 201);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function attendanceRequestEdit(int $id)
     {
-        //
-    }
+        $attendanceRequest = AttendanceRequest::find($id);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Attendance $attendance)
-    {
-        //
-    }
+        if ($attendanceRequest->status != 'pending') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot edit a non-pending attendance request'
+            ], 403);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Attendance $attendance)
-    {
-        //
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'attendance_date' => $attendanceRequest->attendance_date,
+                'entry_time' => $attendanceRequest->entry_time,
+                'exit_time' => $attendanceRequest->exit_time,
+                'reason' => $attendanceRequest->reason,
+            ]
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Attendance $attendance)
+    public function attendanceRequestUpdate(Request $request, int $id)
     {
-        //
-    }
+        $attendanceRequest = AttendanceRequest::findOrFail($id);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Attendance $attendance)
-    {
-        //
+        if ($request->has('status')) {
+
+            $attendanceRequest->update([
+                'status' => $request->status,
+                'decided_by' => auth()->user()->id,
+            ]);
+
+            if ($request->status === 'approved') {
+                $employee = $attendanceRequest->employee;
+
+                // Use the relationship to access shift directly
+                $shift = $employee->shift;
+
+                if (!$shift) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Shift not assigned to employee',
+                    ], 400);
+                }
+
+                $entry = Carbon::parse($attendanceRequest->entry_time);
+                $exit = Carbon::parse($attendanceRequest->exit_time);
+                $shiftStart = Carbon::parse($shift->start_time);
+                $shiftEnd = Carbon::parse($shift->end_time);
+
+                // Grace periods
+                $lateMinutesAllowed = Carbon::parse($shift->late_time)->hour * 60 + Carbon::parse($shift->late_time)->minute;
+                $earlyMinutesAllowed = Carbon::parse($shift->early_time)->hour * 60 + Carbon::parse($shift->early_time)->minute;
+
+                $isLate = $entry->gt($shiftStart->copy()->addMinutes($lateMinutesAllowed));
+                $isEarly = $exit->lt($shiftEnd->copy()->subMinutes($earlyMinutesAllowed));
+
+                Attendance::create([
+                    'attendance_date'  => $attendanceRequest->attendance_date,
+                    'employee_id'      => $attendanceRequest->employee_id,
+                    'shift_start'      => $shift->start_time,
+                    'entry_time'       => $attendanceRequest->entry_time,
+                    'is_late'          => $isLate,
+                    'shift_end'        => $shift->end_time,
+                    'exit_time'        => $attendanceRequest->exit_time,
+                    'is_early'         => $isEarly,
+                    'is_manual'        => true,
+                    'manual_by'        => auth()->user()->id,
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => "Attendance request {$request->status} successfully"
+            ]);
+        } else {
+            // This is an edit request
+            if ($attendanceRequest->status !== 'pending') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot edit a non-pending attendance request'
+                ], 403);
+            }
+
+            $attendanceRequest->update([
+                'attendance_date' => $request->attendance_date,
+                'entry_time' => $request->entry_time,
+                'exit_time' => $request->exit_time,
+                'reason' => $request->reason,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => $attendanceRequest,
+            ]);
+        }
     }
 }

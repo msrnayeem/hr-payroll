@@ -29,7 +29,7 @@ class AttendancesExport implements FromCollection, WithHeadings
                 'Exit Time' => $a->exit_time,
                 'Is Early' => $a->is_early ? 'Yes' : 'No',
                 'Manual Entry' => $a->is_manual ? 'Yes' : 'No',
-                'Marked By' => $a->manualBy->name ?? 'N/A',
+                'Edited By' => $a->manualBy->name ?? 'N/A',
             ];
         });
     }
@@ -47,7 +47,7 @@ class AttendancesExport implements FromCollection, WithHeadings
             'Exit Time',
             'Is Early',
             'Manual Entry',
-            'Marked By',
+            'Edited By',
         ];
     }
 }

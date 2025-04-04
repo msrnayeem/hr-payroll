@@ -88,7 +88,7 @@
 
                             @can('attendance_request')
                                 <li class="nav-item">
-                                    <a href="{{ route('salarycomponent.index', ['type' => 'earning']) }}" class="nav-link">
+                                    <a href="{{ route('attendances-requests.index') }}" class="nav-link">
                                         <i class="nav-icon bi bi-plus-square"></i>
                                         <p>Attendance Request</p>
                                     </a>
@@ -97,7 +97,7 @@
 
                             @canany(['in_out_record', 'in_out_record_report'])
                                 <li class="nav-item">
-                                    <a href="{{ route('salary-cards.index') }}" class="nav-link">
+                                    <a href="{{ route('in-out-records.index') }}" class="nav-link">
                                         <i class="nav-icon bi bi-credit-card"></i>
                                         <p>In/Out Record</p>
                                     </a>

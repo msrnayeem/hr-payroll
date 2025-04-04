@@ -88,6 +88,7 @@ class RolePermissionSeeder extends Seeder
                 'attendance_view' => Permission::create(['name' => 'attendance_view']),
                 'attendance_edit' => Permission::create(['name' => 'attendance_edit']),
                 'attendance_request' => Permission::create(['name' => 'attendance_request']),
+                'edit_attendance_request' => Permission::create(['name' => 'edit_attendance_request']),
                 'attendance_request_decision' => Permission::create(['name' => 'attendance_request_decision']),
                 'attendance_report' => Permission::create(['name' => 'attendance_report']),
                 'in_out_record' => Permission::create(['name' => 'in_out_record']),
@@ -137,7 +138,8 @@ class RolePermissionSeeder extends Seeder
             $permissions['leaves']['edit_leave_applications'],
             $permissions['attendance']['attendance_view'],
             $permissions['attendance']['in_out_record'],
-            $permissions['attendance']['attendance_request']
+            $permissions['attendance']['attendance_request'],
+            $permissions['attendance']['edit_attendance_request']
         ]);
     }
 }
