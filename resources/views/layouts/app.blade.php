@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
-@include('components.head')
+@include('layouts.components.head')
 
 <!--begin::Body-->
 
@@ -12,18 +12,21 @@
     <div class="app-wrapper">
 
         <!--begin::Header-->
-        @include('components.navbar')
+        @include('layouts.components.navbar')
         <!--end::Header-->
 
         <!--begin::Sidebar-->
-        @include('components.sidebar')
+        @include('layouts.components.sidebar')
         <!--end::Sidebar-->
 
         <!--begin::App Main-->
         <main class="app-main">
 
             {{-- Pass the variables to the breadcrumb component --}}
-            @include('components.breadcrumb', ['pageTitle' => $pageTitle, 'breadcrumbs' => $breadcrumbs])
+            @include('layouts.components.breadcrumb', [
+                'pageTitle' => $pageTitle,
+                'breadcrumbs' => $breadcrumbs,
+            ])
 
 
             <!--begin::App Content-->
@@ -40,12 +43,12 @@
 
 
         <!--begin::Footer-->
-        @include('components.footer')
+        @include('layouts.components.footer')
         <!--end::Footer-->
     </div>
     <!--end::App Wrapper-->
 
-    @include('components.scripts')
+    @include('layouts.components.scripts')
 </body>
 <!--end::Body-->
 

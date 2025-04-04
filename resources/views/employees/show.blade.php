@@ -34,8 +34,20 @@
 
                     <div class="col-md-8">
                         <div class="mb-3">
+                            <label class="form-label fw-bold">Employee ID</label>
+                            <p class="form-control-plaintext">{{ $employee->id }}</p>
+                        </div>
+
+                        <div class="mb-3">
                             <label class="form-label fw-bold">Full Name</label>
                             <p class="form-control-plaintext">{{ $employee->name }}</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Status</label>
+                            <p class="form-control-plaintext">
+                                {{ $employee->is_active ? 'Active' : 'Inactive' }}
+                            </p>
                         </div>
 
                         <div class="mb-3">
@@ -53,11 +65,6 @@
                             <p class="form-control-plaintext">
                                 {{ $employee->shift ? $employee->shift->name : 'No shift assigned' }}
                             </p>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Employee ID</label>
-                            <p class="form-control-plaintext">{{ $employee->id }}</p>
                         </div>
 
                         @can('edit_employee')

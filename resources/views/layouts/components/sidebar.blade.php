@@ -66,6 +66,48 @@
                 @endcan
 
                 <!-- Salary Management -->
+                @can('attendance_view')
+                    <li class="nav-item mt-3">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon bi bi-currency-dollar"></i>
+                            <p>
+                                Attendance
+                                <i class="nav-arrow bi bi-chevron-right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+
+                            @canany(['attendance_view', 'attendance_report'])
+                                <li class="nav-item">
+                                    <a href="{{ route('attendances.index') }}" class="nav-link">
+                                        <i class="nav-icon bi bi-credit-card"></i>
+                                        <p>Attendance report</p>
+                                    </a>
+                                </li>
+                            @endcan
+
+                            @can('attendance_request')
+                                <li class="nav-item">
+                                    <a href="{{ route('salarycomponent.index', ['type' => 'earning']) }}" class="nav-link">
+                                        <i class="nav-icon bi bi-plus-square"></i>
+                                        <p>Attendance Request</p>
+                                    </a>
+                                </li>
+                            @endcan
+
+                            @canany(['in_out_record', 'in_out_record_report'])
+                                <li class="nav-item">
+                                    <a href="{{ route('salary-cards.index') }}" class="nav-link">
+                                        <i class="nav-icon bi bi-credit-card"></i>
+                                        <p>In/Out Record</p>
+                                    </a>
+                                </li>
+                            @endcan
+                        </ul>
+                    </li>
+                @endcan
+
+                <!-- Salary Management -->
                 @can('view_salary_management')
                     <li class="nav-item mt-3">
                         <a href="#" class="nav-link">

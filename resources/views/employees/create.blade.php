@@ -101,12 +101,8 @@
                                 <label for="status" class="form-label fw-bold">Status</label>
                                 <select name="status" id="status"
                                     class="form-select @error('status') is-invalid @enderror">
-                                    <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>
-                                        Active
-                                    </option>
-                                    <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>
-                                        Inactive
-                                    </option>
+                                    <option value="1" {{ old('status') === '1' ? 'selected' : '' }}>Active</option>
+                                    <option value="0" {{ old('status') === '0' ? 'selected' : '' }}>Inactive</option>
                                 </select>
                                 @error('status')
                                     <div class="text-danger">{{ $message }}</div>

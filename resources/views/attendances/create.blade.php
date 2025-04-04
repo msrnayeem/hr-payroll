@@ -2,10 +2,10 @@
 
 @section('content')
     @php
-        $pageTitle = 'Edit Employee';
+        $pageTitle = 'Create Employee';
         $breadcrumbs = [
-            ['title' => 'Employees', 'url' => route('employees.index')],
-            ['title' => 'Edit Employee', 'url' => '#'],
+            ['title' => 'Employees', 'url' => route('employees.index', ['status' => 'active'])],
+            ['title' => 'Create Employee', 'url' => '#'],
         ];
     @endphp
 
@@ -13,24 +13,25 @@
         <div class="card shadow-sm border-0">
             <div class="card-header bg-primary text-white py-3">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h3 class="card-title mb-0">Edit Employee</h3>
-
+                    <h3 class="card-title mb-0">Add New Employee</h3>
+                    <a href="{{ route('employees.index', ['status' => 'active']) }}" class="btn btn-light btn-sm">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
                 </div>
             </div>
 
             <div class="card-body p-4">
-                <form action="{{ route('employees.update', $employee) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('employees.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    @method('PUT')
 
                     <div class="row">
                         <!-- Profile Image Section -->
                         <div class="col-md-4">
                             <div class="text-center mb-4">
                                 <div class="position-relative d-inline-block">
-                                    <img src="{{ $employee->profile_image ? Storage::url($employee->profile_image) : asset('assets/img/default-profile.jpg') }}"
+                                    <img src=""
                                         class="rounded-circle shadow-sm img-fluid border border-2 border-primary"
-                                        style="width: 150px; height: 150px; object-fit: cover;" alt="Profile Preview"
+                                        style="width: 150px; height: 150px; object-fit: cover;" alt="Preview"
                                         id="profile-preview">
                                 </div>
                                 <div class="mt-3">
@@ -51,8 +52,8 @@
                                 <label for="name" class="form-label fw-bold">Full Name <span
                                         class="text-danger">*</span></label>
                                 <input type="text" name="name" id="name"
-                                    class="form-control @error('name') is-invalid @enderror"
-                                    value="{{ old('name', $employee->name) }}" required>
+                                    class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}"
+                                    required>
                                 @error('name')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -62,19 +63,19 @@
                                 <label for="email" class="form-label fw-bold">Email Address <span
                                         class="text-danger">*</span></label>
                                 <input type="email" name="email" id="email"
-                                    class="form-control @error('email') is-invalid @enderror"
-                                    value="{{ old('email', $employee->email) }}" required>
+                                    class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}"
+                                    required>
                                 @error('email')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
 
                             <div class="mb-3">
-                                <label for="phone" class="form-label fw-bold">Phone <span
+                                <label for="phone" class="form-label fw-bold">Phone<span
                                         class="text-danger">*</span></label>
-                                <input type="text" name="phone" id="phone"
-                                    class="form-control @error('phone') is-invalid @enderror"
-                                    value="{{ old('phone', $employee->phone) }}" required>
+                                <input type="phone" name="phone" id="phone"
+                                    class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone') }}"
+                                    required>
                                 @error('phone')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -87,7 +88,7 @@
                                     <option value="">Select Shift</option>
                                     @foreach ($shifts as $shift)
                                         <option value="{{ $shift->id }}"
-                                            {{ old('shift_id', $employee->shift_id) == $shift->id ? 'selected' : '' }}>
+                                            {{ old('shift_id') == $shift->id ? 'selected' : '' }}>
                                             {{ $shift->name }}
                                         </option>
                                     @endforeach
@@ -96,14 +97,15 @@
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
-
                             <div class="mb-3">
                                 <label for="status" class="form-label fw-bold">Status</label>
                                 <select name="status" id="status"
                                     class="form-select @error('status') is-invalid @enderror">
-                                    <option value="1" {{ $employee->is_active == 1 ? 'selected' : '' }}>Active
+                                    <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>
+                                        Active
                                     </option>
-                                    <option value="0" {{ $employee->is_active == 0 ? 'selected' : '' }}>Inactive
+                                    <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>
+                                        Inactive
                                     </option>
                                 </select>
                                 @error('status')
@@ -111,38 +113,33 @@
                                 @enderror
                             </div>
 
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="change_password_checkbox">
-                                <label class="form-check-label fw-bold" for="change_password_checkbox">Change
-                                    Password</label>
+                            <div class="mb-3">
+                                <label for="password" class="form-label fw-bold">Password <span
+                                        class="text-danger">*</span></label>
+                                <input type="password" name="password" id="password"
+                                    class="form-control @error('password') is-invalid @enderror" required>
+                                <small class="text-muted">Minimum 6 characters</small>
+                                @error('password')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
 
-                            <div id="password_fields" class="d-none">
-                                <div class="mb-3">
-                                    <label for="password" class="form-label fw-bold">New Password</label>
-                                    <input type="password" name="password" id="password"
-                                        class="form-control @error('password') is-invalid @enderror">
-                                    <small class="text-muted">Minimum 6 characters, leave blank to keep current</small>
-                                    @error('password')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="password_confirmation" class="form-label fw-bold">Confirm Password</label>
-                                    <input type="password" name="password_confirmation" id="password_confirmation"
-                                        class="form-control @error('password_confirmation') is-invalid @enderror">
-                                    @error('password_confirmation')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                            <div class="mb-3">
+                                <label for="password_confirmation" class="form-label fw-bold">Confirm Password <span
+                                        class="text-danger">*</span></label>
+                                <input type="password" name="password_confirmation" id="password_confirmation"
+                                    class="form-control @error('password_confirmation') is-invalid @enderror" required>
+                                @error('password_confirmation')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="d-flex gap-2">
                                 <button type="submit" class="btn btn-primary px-4">
-                                    <i class="fas fa-save"></i> Update Employee
+                                    <i class="fas fa-save"></i> Create Employee
                                 </button>
-                                <a href="{{ url()->previous() }}" class="btn btn-outline-secondary px-4">
+                                <a href="{{ route('employees.index', ['status' => 'active']) }}"
+                                    class="btn btn-outline-secondary px-4">
                                     <i class="fas fa-times"></i> Cancel
                                 </a>
                             </div>
@@ -153,27 +150,17 @@
         </div>
     </div>
 
+    <!-- Image Preview Script -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const checkbox = document.getElementById('change_password_checkbox');
-            const passwordFields = document.getElementById('password_fields');
-            const profileImage = document.getElementById('profile_image');
-            const profilePreview = document.getElementById('profile-preview');
-
-            checkbox.addEventListener('change', function() {
-                passwordFields.classList.toggle('d-none', !this.checked);
-            });
-
-            profileImage.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        profilePreview.src = e.target.result;
-                    }
-                    reader.readAsDataURL(file);
+        document.getElementById('profile_image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profile-preview').src = e.target.result;
                 }
-            });
+                reader.readAsDataURL(file);
+            }
         });
     </script>
 @endsection

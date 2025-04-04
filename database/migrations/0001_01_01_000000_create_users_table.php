@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('shift_id')->nullable();
             $table->foreignId('salary_card_id')->nullable();
             $table->string('email')->unique();
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->boolean('is_active')->default(true);
             $table->string('phone')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

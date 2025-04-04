@@ -71,7 +71,7 @@
                 <td>{{ $employee->email }}</td>
                 <td>{{ $employee->phone }}</td>
                 <td>{{ $employee->shift->name ?? 'N\A' }}</td>
-                <td> {{ $employee->status }}</td>
+                <td>{{ $employee->is_active ? 'Active' : 'Inactive' }}</td>
                 <td>
                     @if ($employee->salary_card_id)
                         <a href="{{ route('salary-cards.show', $employee->salary_card_id) }}">
@@ -89,7 +89,7 @@
                             </a>
 
                             @can('edit_employee')
-                                @if ($employee->status == 'active')
+                                @if ($employee->is_active)
                                     <!-- Edit Button -->
                                     <a href="{{ route('employees.edit', $employee->id) }}" class="btn btn-warning btn-sm">
                                         <i class="fas fa-edit"></i> Edit
@@ -99,7 +99,7 @@
                                     <form action="{{ route('employees.update-status', $employee->id) }}" method="POST"
                                         style="display:inline;">
                                         @csrf
-                                        <input type="hidden" name="status" value="inactive">
+                                        <input type="hidden" name="is_active" value="0">
                                         <button type="submit" class="btn btn-danger btn-sm">
                                             <i class="fas fa-ban"></i> Deactivate
                                         </button>
@@ -109,13 +109,14 @@
                                     <form action="{{ route('employees.update-status', $employee->id) }}" method="POST"
                                         style="display:inline;">
                                         @csrf
-                                        <input type="hidden" name="status" value="active">
+                                        <input type="hidden" name="is_active" value="1">
                                         <button type="submit" class="btn btn-success btn-sm">
                                             <i class="fas fa-check"></i> Activate
                                         </button>
                                     </form>
                                 @endif
                             @endcan
+
                         </div>
                     </td>
                 @endif

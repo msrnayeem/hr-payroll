@@ -19,9 +19,8 @@ class EmployeeController extends Controller
 
         $query = User::with('shift');
 
-        // Apply status filter
-        if ($request->has('status') && in_array($request->status, ['active', 'inactive'])) {
-            $query->where('status', $request->status);
+        if ($request->has('status') && in_array($status, ['active', 'inactive'])) {
+            $query->where('is_active', $status === 'active' ? true : false);
         }
 
         $employees = $query->get();
@@ -65,7 +64,7 @@ class EmployeeController extends Controller
             'password' => 'required|min:6|confirmed',
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'phone' => 'nullable|string|max:15',
-            'status' => 'nullable|in:active,inactive',
+            'is_active' => 'boolean',
         ]);
 
         // Prepare data for creation
@@ -75,7 +74,7 @@ class EmployeeController extends Controller
             'shift_id' => $request->shift_id,
             'password' => Hash::make($request->password),
             'phone' => $request->phone,
-            'status' => $request->status ?? 'active',
+            'status' => $request->status ?? true,
         ];
 
         // Create Employee first to get the ID
@@ -125,7 +124,7 @@ class EmployeeController extends Controller
             'password' => 'nullable|min:6|confirmed',
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'phone' => 'nullable|string|max:15',
-            'status' => 'nullable|in:active,inactive',
+            'is_active' => 'boolean',
         ]);
 
         // Prepare data for update
@@ -134,7 +133,7 @@ class EmployeeController extends Controller
             'email' => $request->email,
             'shift_id' => $request->shift_id,
             'phone' => $request->phone,
-            'status' => $request->status ?? 'active',
+            'is_active' => $request->is_active ?? true,
         ];
 
         // Update password only if provided
@@ -164,21 +163,20 @@ class EmployeeController extends Controller
 
     public function updateStatus(Request $request, User $employee)
     {
-        // Check if the authenticated user is trying to update their own status
+        // Prevent self-deactivation
         if ($employee->id === auth()->id()) {
-            return redirect()->back()->with('error', 'You cannot update your own status.');
+            return redirect()->back()->with('error', 'You are not permitted');
         }
 
-        // Validate the status input
+        // Validate the input
         $request->validate([
-            'status' => 'required|in:active,inactive',
+            'is_active' => 'boolean',
         ]);
 
-        // Update the status of the employee
-        $employee->status = $request->status;
+        // Update the employee's active status
+        $employee->is_active = $request->is_active;
         $employee->save();
 
-        // Redirect back with a success message
         return redirect()->back()->with('success', 'Employee status updated successfully.');
     }
 }

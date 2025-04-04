@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmployeeController;
@@ -39,6 +40,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('employees', EmployeeController::class)->except(['destroy']);
     Route::post('/employees/{employee}/update-status', [EmployeeController::class, 'updateStatus'])->name('employees.update-status');
 
+    //attendance resource routes
+    Route::resource('attendances', AttendanceController::class)->except(['destroy', 'show']);
 
     // Salary Management
     Route::resource('salary-cards', SalaryCardController::class)->except(['destroy']);

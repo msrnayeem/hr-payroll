@@ -17,15 +17,13 @@ class SalaryComponentsSeeder extends Seeder
             ['name' => 'Medical Allowance', 'type' => 'earning'],
             ['name' => 'Transport Allowance', 'type' => 'earning'],
             ['name' => 'Mobile Bill', 'type' => 'earning'],
-            ['name' => 'Loan Repayment', 'type' => 'deduction'],
             ['name' => 'Provident Fund', 'type' => 'deduction'],
-            ['name' => 'Tax Deduction', 'type' => 'deduction'],
             ['name' => 'Health Insurance', 'type' => 'deduction'],
         ];
 
         foreach ($salaryComponents as $component) {
             DB::table('salary_components')->updateOrInsert(
-                ['name' => $component['name']], // Check if the record exists
+                ['name' => $component['name']],
                 ['type' => $component['type'], 'created_at' => now(), 'updated_at' => now()]
             );
         }

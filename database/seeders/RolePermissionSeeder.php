@@ -83,6 +83,16 @@ class RolePermissionSeeder extends Seeder
                 'edit_leave_applications' => Permission::create(['name' => 'edit_leave_applications']),
                 'take_leave_decision' => Permission::create(['name' => 'take_leave_decision']),
             ],
+
+            'attendance' => [
+                'attendance_view' => Permission::create(['name' => 'attendance_view']),
+                'attendance_edit' => Permission::create(['name' => 'attendance_edit']),
+                'attendance_request' => Permission::create(['name' => 'attendance_request']),
+                'attendance_request_decision' => Permission::create(['name' => 'attendance_request_decision']),
+                'attendance_report' => Permission::create(['name' => 'attendance_report']),
+                'in_out_record' => Permission::create(['name' => 'in_out_record']),
+                'in_out_record_report' => Permission::create(['name' => 'in_out_record_report']),
+            ],
         ];
 
         // Assign Permissions to Roles
@@ -96,7 +106,8 @@ class RolePermissionSeeder extends Seeder
             $permissions['admin'],
             $permissions['roles_permissions'],
             $permissions['holidays'],
-            $permissions['leaves']
+            $permissions['leaves'],
+            $permissions['attendance']
         ));
 
         // HR - Most access except roles/permissions management and settings
@@ -106,9 +117,10 @@ class RolePermissionSeeder extends Seeder
             $permissions['salary'],
             $permissions['components'],
             $permissions['payslips'],
-            [$permissions['admin']['view_reports']], // Only view reports, not manage settings
+            [$permissions['admin']['view_reports']],
             $permissions['holidays'],
-            $permissions['leaves']
+            $permissions['leaves'],
+            $permissions['attendance']
         ));
 
         // Employee - Limited access
@@ -123,6 +135,9 @@ class RolePermissionSeeder extends Seeder
             $permissions['leaves']['view_leave_applications'],
             $permissions['leaves']['add_leave_applications'],
             $permissions['leaves']['edit_leave_applications'],
+            $permissions['attendance']['attendance_view'],
+            $permissions['attendance']['in_out_record'],
+            $permissions['attendance']['attendance_request']
         ]);
     }
 }
