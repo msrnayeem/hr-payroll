@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Carbon\Carbon;
 
 class Attendance extends Model
 {
@@ -34,5 +35,21 @@ class Attendance extends Model
     public function manualBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'manual_by');
+    }
+
+    public function getShiftTimeAttribute()
+    {
+        return Carbon::parse($this->shift_start)->format('g:i A') . ' - ' .
+            Carbon::parse($this->shift_end)->format('g:i A');
+    }
+
+    public function getEntryTimeFormattedAttribute()
+    {
+        return $this->entry_time ? Carbon::parse($this->entry_time)->format('g:i A') : null;
+    }
+
+    public function getExitTimeFormattedAttribute()
+    {
+        return $this->exit_time ? Carbon::parse($this->exit_time)->format('g:i A') : null;
     }
 }

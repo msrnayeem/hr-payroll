@@ -40,18 +40,14 @@
             </div>
 
             <div class="card-body">
-                <form method="GET" action="{{ route('attendances.index') }}" class="form">
+                <form method="GET" action="{{ route('attendances.index') }}" class="form" autocomplete="off">
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <x-employee-select :all-employee="true" />
                         </div>
 
                         <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="date">Date Range</label>
-                                <input type="text" name="date" id="date" class="form-control"
-                                    value="{{ request('date') }}" placeholder="Select date range">
-                            </div>
+                            <x-date-range />
                         </div>
 
                         <div class="col-md-4">
@@ -73,32 +69,9 @@
     </div>
 
     @push('css')
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     @endpush
 
     @push('js')
-        <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-
-        <script>
-            $(document).ready(function() {
-                $('#date').daterangepicker({
-                    autoUpdateInput: false,
-                    locale: {
-                        cancelLabel: 'Clear',
-                        format: 'YYYY-MM-DD'
-                    }
-                });
-
-                $('#date').on('apply.daterangepicker', function(ev, picker) {
-                    $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format(
-                        'YYYY-MM-DD'));
-                });
-
-                $('#date').on('cancel.daterangepicker', function(ev, picker) {
-                    $(this).val('');
-                });
-            });
-        </script>
+        <script></script>
     @endpush
 @endsection

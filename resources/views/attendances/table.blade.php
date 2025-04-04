@@ -46,8 +46,10 @@
             <th>Exit</th>
             <th>Late</th>
             <th>Early</th>
-            <th>Manual</th>
-            <th>Edited By</th>
+            @if (!isset($export))
+                <th>Manual</th>
+                <th>Edited By</th>
+            @endif
         </tr>
     </thead>
     <tbody>
@@ -58,10 +60,10 @@
                 <td>{{ $attendance->employee->name ?? 'N/A' }}</td>
                 <td>{{ $attendance->attendance_date }}</td>
                 <td>
-                    {{ $attendance->shift_start . ' - ' . $attendance->shift_end }}
+                    {{ $attendance->shift_time }}
                 </td>
-                <td>{{ $attendance->entry_time }}</td>
-                <td>{{ $attendance->exit_time }}</td>
+                <td>{{ $attendance->entry_time_formatted }}</td>
+                <td>{{ $attendance->exit_time_formatted }}</td>
                 <td>
                     {!! $attendance->is_late
                         ? '<span class="badge bg-danger">Yes</span>'
@@ -72,8 +74,10 @@
                         ? '<span class="badge bg-warning">Yes</span>'
                         : '<span class="badge bg-success">No</span>' !!}
                 </td>
-                <td>{{ $attendance->is_manual ? 'Yes' : 'No' }}</td>
-                <td>{{ $attendance->manualBy->name ?? 'N/A' }}</td>
+                @if (!isset($export))
+                    <td>{{ $attendance->is_manual ? 'Yes' : 'No' }}</td>
+                    <td>{{ $attendance->manualBy->name ?? 'N/A' }}</td>
+                @endif
             </tr>
         @endforeach
     </tbody>

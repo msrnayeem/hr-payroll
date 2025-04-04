@@ -4,6 +4,7 @@
 <div class="form-group">
     <label for="employee_id">Employee</label>
     <select class="form-control select2" id="employee_id" name="employee_id">
+        <option value="" disabled selected>Select an employee</option>
         @foreach ($employees as $emp)
             <option value="{{ $emp->id }}" {{ request('employee_id') == $emp->id ? 'selected' : '' }}>
                 {{ $emp->name }}

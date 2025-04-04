@@ -40,18 +40,14 @@
             </div>
 
             <div class="card-body">
-                <form method="GET" action="{{ route('in-out-records.index') }}" class="form">
+                <form method="GET" action="{{ route('in-out-records.index') }}" class="form" autocomplete="off">
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <x-employee-select :all-employee="true" />
                         </div>
 
                         <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="date">Date Range</label>
-                                <input type="text" name="date" id="date" class="form-control"
-                                    value="{{ request('date') }}" placeholder="Select date range">
-                            </div>
+                            <x-date-range />
                         </div>
 
                         <div class="col-md-4">
