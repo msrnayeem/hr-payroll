@@ -62,8 +62,8 @@
                 <td>
                     {{ $attendance->shift_time }}
                 </td>
-                <td>{{ $attendance->entry_time_formatted }}</td>
-                <td>{{ $attendance->exit_time_formatted }}</td>
+                <td>{{ format12hr($attendance->entry_time) }}</td>
+                <td>{{ format12hr($attendance->exit_time) }}</td>
                 <td>
                     {!! $attendance->is_late
                         ? '<span class="badge bg-danger">Yes</span>'

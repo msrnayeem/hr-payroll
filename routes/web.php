@@ -15,6 +15,7 @@ use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\InOutRecordController;
 use App\Http\Controllers\LeaveCategoryController;
 use App\Http\Controllers\LeaveApplicationController;
+use App\Http\Controllers\ShiftController;
 use App\Models\InOutRecord;
 
 Route::get('/', function () {
@@ -41,6 +42,9 @@ Route::middleware(['auth'])->group(function () {
     // Employee Management
     Route::resource('employees', EmployeeController::class)->except(['destroy']);
     Route::post('/employees/{employee}/update-status', [EmployeeController::class, 'updateStatus'])->name('employees.update-status');
+
+    //shift management
+    Route::resource('shifts', ShiftController::class)->except(['create', 'destroy']);
 
     //attendance resource routes
     Route::resource('attendances', AttendanceController::class)->only(['index']);

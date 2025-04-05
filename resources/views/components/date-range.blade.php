@@ -30,6 +30,7 @@
                     if ($('#date').val().trim() === '') {
                         $('#date').removeAttr('name');
                     }
+                    a
                 });
             });
         </script>

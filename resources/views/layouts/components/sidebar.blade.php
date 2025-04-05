@@ -65,6 +65,15 @@
                     </li>
                 @endcan
 
+                @can('shift_view')
+                    <li class="nav-item mt-3">
+                        <a href="{{ route('shifts.index') }}" class="nav-link">
+                            <i class="nav-icon bi bi-calendar-check"></i>
+                            <p>Shifts</p>
+                        </a>
+                    </li>
+                @endcan
+
                 <!-- Salary Management -->
                 @can('attendance_view')
                     <li class="nav-item mt-3">

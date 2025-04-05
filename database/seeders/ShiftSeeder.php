@@ -24,8 +24,8 @@ class ShiftSeeder extends Seeder
             'wednesday' => true,
             'thursday' => true,
             'friday' => false, // Friday off
-            'late_time' => '00:00:00',
-            'early_time' => '00:00:00',
+            'late_time' => '10:00:00',
+            'early_time' => '20:00:00',
         ]);
 
         Shift::create([
@@ -39,8 +39,8 @@ class ShiftSeeder extends Seeder
             'wednesday' => true,
             'thursday' => true,
             'friday' => false, // Friday off
-            'late_time' => '00:15:00',
-            'early_time' => '00:15:00',
+            'late_time' => '10:15:00',
+            'early_time' => '17:45:00',
         ]);
     }
 }

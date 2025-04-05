@@ -24,8 +24,8 @@ return new class extends Migration
             $table->boolean('wednesday')->default('1');
             $table->boolean('thursday')->default('1');
             $table->boolean('friday')->default('0');
-            $table->time('late_time')->default('00:15:00')->nullable();
-            $table->time('early_time')->default('00:15:00')->nullable();
+            $table->time('late_time')->default('10:15:00')->nullable();
+            $table->time('early_time')->default('19:45:00')->nullable();
             $table->timestamps();
         });
     }

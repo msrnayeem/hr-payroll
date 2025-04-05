@@ -29,6 +29,14 @@ class RolePermissionSeeder extends Seeder
                 'edit_employee' => Permission::create(['name' => 'edit_employee']),
             ],
 
+            // Shift Management
+            'shifts' => [
+                'shift_view' => Permission::create(['name' => 'shift_view']),
+                'add_shift' => Permission::create(['name' => 'add_shift']),
+                'edit_shift' => Permission::create(['name' => 'edit_shift']),
+                'assign_shift' => Permission::create(['name' => 'assign_shift']),
+            ],
+
             // Salary Management
             'salary' => [
                 'view_salary_management' => Permission::create(['name' => 'view_salary_management']),
@@ -101,6 +109,7 @@ class RolePermissionSeeder extends Seeder
         $admin->givePermissionTo(array_merge(
             $permissions['general'],
             $permissions['employees'],
+            $permissions['shifts'],
             $permissions['salary'],
             $permissions['components'],
             $permissions['payslips'],
@@ -121,7 +130,8 @@ class RolePermissionSeeder extends Seeder
             [$permissions['admin']['view_reports']],
             $permissions['holidays'],
             $permissions['leaves'],
-            $permissions['attendance']
+            $permissions['attendance'],
+            $permissions['shifts'],
         ));
 
         // Employee - Limited access
@@ -139,7 +149,8 @@ class RolePermissionSeeder extends Seeder
             $permissions['attendance']['attendance_view'],
             $permissions['attendance']['in_out_record'],
             $permissions['attendance']['attendance_request'],
-            $permissions['attendance']['edit_attendance_request']
+            $permissions['attendance']['edit_attendance_request'],
+            $permissions['shifts']['shift_view'],
         ]);
     }
 }

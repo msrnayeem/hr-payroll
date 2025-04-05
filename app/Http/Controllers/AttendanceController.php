@@ -10,31 +10,39 @@ use App\Exports\AttendancesExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use App\Models\AttendanceRequest;
-use App\Models\Shift;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class AttendanceController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Attendance::query();
+        Log::info($request->all());
 
-        // Filter by employee_id
+        // Query for attendances, eager loading employee and manualBy relationships
+        $query = Attendance::with('employee', 'manualBy');
+
+        // Filter by employee_id if provided
         if ($request->filled('employee_id')) {
             $query->where('employee_id', $request->employee_id);
         }
 
-        // Filter by date
+        // Filter by date range if provided
         if ($request->filled('date')) {
-            $date = $request->date;
-            $query->whereDate('attendance_date', $date);
+            $dateRange = $request->date;
+            // Split the date range into start and end dates
+            $dates = explode(' - ', $dateRange);
+
+            if (count($dates) === 2) {
+                $startDate = Carbon::parse($dates[0])->startOfDay(); // Ensure it's the start of the day
+                $endDate = Carbon::parse($dates[1])->endOfDay(); // Ensure it's the end of the day
+
+                $query->whereBetween('attendance_date', [$startDate, $endDate]);
+            }
         }
 
         // Fetch attendances
         $attendances = $query->get();
-
-        // Fetch all employees for the filter dropdown
-        $employees = User::get();
 
         // Export logic (unchanged)
         if ($request->has('export')) {
@@ -50,24 +58,48 @@ class AttendanceController extends Controller
             }
         }
 
-        // Return the view with attendances and employee data
-        return view('attendances.index', compact('attendances', 'employees'));
+        // Return the view with only attendances data
+        return view('attendances.index', compact('attendances'));
     }
 
 
-    public function attendanceRequest()
+    public function attendanceRequest(Request $request)
     {
-
+        // Check for user permission
         if (auth()->user()->can('attendance_request_decision')) {
-            $attendanceRequests = AttendanceRequest::with(['employee', 'decidedBy'])->get();
+            $attendanceRequests = AttendanceRequest::with(['employee', 'decidedBy']);
             $users = User::all();
         } else {
-            $attendanceRequests = AttendanceRequest::with(['employee', 'decidedBy'])->where('employee_id', auth()->user()->id)->get();
+            $attendanceRequests = AttendanceRequest::with(['employee', 'decidedBy'])
+                ->where('employee_id', auth()->user()->id);
             $users = User::where('id', auth()->user()->id)->get();
         }
 
+        // Apply filters
+        if ($request->filled('employee_id')) {
+            $attendanceRequests->where('employee_id', $request->employee_id);
+        }
+
+        if ($request->filled('date')) {
+            $dateRange = $request->date;
+            $dates = explode(' - ', $dateRange);
+
+            if (count($dates) === 2) {
+                $startDate = Carbon::parse($dates[0])->startOfDay();
+                $endDate = Carbon::parse($dates[1])->endOfDay();
+
+                $attendanceRequests->whereBetween('attendance_date', [$startDate, $endDate]);
+            }
+        }
+
+        // Fetch attendance requests
+        $attendanceRequests = $attendanceRequests->get();
+
+        // Return the view with attendanceRequests and users data
         return view('attendances.requests', compact('attendanceRequests', 'users'));
     }
+
+
     public function attendanceRequestStore(Request $request)
     {
         $validated = $request->validate([
@@ -134,7 +166,6 @@ class AttendanceController extends Controller
             if ($request->status === 'approved') {
                 $employee = $attendanceRequest->employee;
 
-                // Use the relationship to access shift directly
                 $shift = $employee->shift;
 
                 if (!$shift) {
@@ -147,14 +178,12 @@ class AttendanceController extends Controller
                 $entry = Carbon::parse($attendanceRequest->entry_time);
                 $exit = Carbon::parse($attendanceRequest->exit_time);
                 $shiftStart = Carbon::parse($shift->start_time);
+                $lateTime = Carbon::parse($shift->late_time);
                 $shiftEnd = Carbon::parse($shift->end_time);
+                $earlyTime = Carbon::parse($shift->early_time);
 
-                // Grace periods
-                $lateMinutesAllowed = Carbon::parse($shift->late_time)->hour * 60 + Carbon::parse($shift->late_time)->minute;
-                $earlyMinutesAllowed = Carbon::parse($shift->early_time)->hour * 60 + Carbon::parse($shift->early_time)->minute;
-
-                $isLate = $entry->gt($shiftStart->copy()->addMinutes($lateMinutesAllowed));
-                $isEarly = $exit->lt($shiftEnd->copy()->subMinutes($earlyMinutesAllowed));
+                $isLate = $lateTime->greaterThan($shiftStart);
+                $isEarly = $earlyTime->lessThan($shiftEnd);
 
                 Attendance::create([
                     'attendance_date'  => $attendanceRequest->attendance_date,

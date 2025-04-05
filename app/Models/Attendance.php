@@ -43,13 +43,4 @@ class Attendance extends Model
             Carbon::parse($this->shift_end)->format('g:i A');
     }
 
-    public function getEntryTimeFormattedAttribute()
-    {
-        return $this->entry_time ? Carbon::parse($this->entry_time)->format('g:i A') : null;
-    }
-
-    public function getExitTimeFormattedAttribute()
-    {
-        return $this->exit_time ? Carbon::parse($this->exit_time)->format('g:i A') : null;
-    }
 }

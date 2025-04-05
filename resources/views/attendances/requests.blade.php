@@ -21,6 +21,30 @@
             </div>
 
             <div class="card-body">
+
+                <form method="GET" action="{{ route('attendances-requests.index') }}" class="form" autocomplete="off">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <x-employee-select :all-employee="true" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <x-date-range />
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group mt-4">
+                                <button type="submit" class="btn btn-primary mr-2">
+                                    <i class="fas fa-filter"></i> Filter
+                                </button>
+                                <a href="{{ route('attendances-requests.index') }}" class="btn btn-secondary">
+                                    <i class="fas fa-sync"></i> Reset
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
                 <table class="table table-bordered table-hover" id="attendanceRequestsTable">
                     <thead>
                         <tr>
@@ -41,8 +65,8 @@
                             <tr id="attendanceRequestRow-{{ $attendanceRequest->id }}">
                                 <td>{{ $attendanceRequest->employee->name }}</td>
                                 <td>{{ $attendanceRequest->attendance_date }}</td>
-                                <td>{{ \Carbon\Carbon::parse($attendanceRequest->entry_time)->format('h:i A') }}</td>
-                                <td>{{ \Carbon\Carbon::parse($attendanceRequest->exit_time)->format('h:i A') }}</td>
+                                <td>{{ format12hr($attendanceRequest->entry_time) }}</td>
+                                <td>{{ format12hr($attendanceRequest->exit_time) }}</td>
                                 <td>{{ ucfirst($attendanceRequest->status) }}</td>
                                 <td>{{ $attendanceRequest->reason ?? 'N/A' }}</td>
                                 <td>{{ $attendanceRequest->decidedBy->name ?? 'N/A' }}</td>
@@ -76,7 +100,6 @@
     @push('js')
         <!-- Include SweetAlert2 & jQuery -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
         <script>
             $(document).ready(function() {

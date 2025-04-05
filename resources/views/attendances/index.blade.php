@@ -55,7 +55,7 @@
                                 <button type="submit" class="btn btn-primary mr-2">
                                     <i class="fas fa-filter"></i> Filter
                                 </button>
-                                <a href="{{ route('attendances.index') }}" class="btn btn-default">
+                                <a href="{{ route('attendances.index') }}" class="btn btn-secondary">
                                     <i class="fas fa-sync"></i> Reset
                                 </a>
                             </div>
